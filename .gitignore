@@ -1,1 +1,5 @@
 node_modules/
+tenant_files/
+tenant_logos/
+logs/
+public/

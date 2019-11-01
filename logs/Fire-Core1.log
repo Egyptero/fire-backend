@@ -1,0 +1,4 @@
+{"message":"Connected to Mongo DB @ mongodb://localhost:27017/FIRE_DEV","level":"info"}
+{"message":"Route point of users is added","level":"info"}
+{"message":"FIRE- Backend started on port 5555","level":"info"}
+{"message":"Agent Event Channel Started at http://localhost:5555","level":"info"}

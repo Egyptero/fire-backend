@@ -1,0 +1,142 @@
+[
+  {
+    "type": "standard.Circle",
+    "position": { "x": 5140, "y": 80 },
+    "size": { "width": 60, "height": 60 },
+    "angle": 0,
+    "root": { "title": "Start" },
+    "cursor": "hand",
+    "id": "fd50492b-9dc0-4baf-8bcc-825aa5dcf57e",
+    "z": 1,
+    "attrs": {
+      "body": { "fill": "transparent", "stroke": "#000078" },
+      "label": { "fill": "#000078", "text": "Start" }
+    }
+  },
+  {
+    "type": "standard.HeaderedRectangle",
+    "position": { "x": 4580, "y": 380 },
+    "size": { "width": 180, "height": 60 },
+    "angle": 0,
+    "root": { "title": "Queue" },
+    "id": "49d86405-0f12-4aaf-b80a-1a6c7436e975",
+    "z": 2,
+    "attrs": {
+      "body": { "fill": "transparent", "stroke": "#7F7F7F" },
+      "bodyText": { "text": "Arabic", "skillId": "5cc9a1b1a870ac3834e57329" },
+      "header": { "fill": "#7F7F7F", "stroke": "#7F7F7F" },
+      "headerText": { "fill": "#FFFFFF", "text": "Queue to skill" }
+    }
+  },
+  {
+    "type": "standard.Link",
+    "source": { "id": "fd50492b-9dc0-4baf-8bcc-825aa5dcf57e" },
+    "target": { "id": "691cf907-284b-43fc-90e7-6b3e16813cda" },
+    "root": { "title": "Link" },
+    "id": "0adad325-3dae-4d8a-bc55-69f67e778896",
+    "router": { "name": "orthogonal" },
+    "z": 3,
+    "labels": [{ "attrs": { "text": { "text": "" } } }],
+    "attrs": { "line": { "stroke": "#000000" }, "label": { "text": "Yes" } }
+  },
+  {
+    "type": "standard.Circle",
+    "position": { "x": 4910, "y": 380 },
+    "size": { "width": 60, "height": 60 },
+    "angle": 0,
+    "root": { "title": "Stop" },
+    "id": "5303d17a-c330-4a24-9e66-14d5487d70c8",
+    "z": 4,
+    "attrs": {
+      "body": { "fill": "transparent", "stroke": "#C80000" },
+      "label": { "fill": "#C80000", "text": "Stop" }
+    }
+  },
+  {
+    "type": "standard.Link",
+    "source": { "id": "49d86405-0f12-4aaf-b80a-1a6c7436e975" },
+    "target": { "id": "5303d17a-c330-4a24-9e66-14d5487d70c8" },
+    "root": { "title": "Link" },
+    "id": "bc5c77f0-1870-4478-8acd-6208265bbfd0",
+    "router": { "name": "orthogonal" },
+    "z": 5,
+    "labels": [{ "attrs": { "text": { "text": "" } } }],
+    "attrs": { "line": { "stroke": "#000000" }, "label": { "text": "Yes" } }
+  },
+  {
+    "type": "standard.Polygon",
+    "position": { "x": 4910, "y": 80 },
+    "size": { "width": 60, "height": 60 },
+    "angle": 0,
+    "root": { "title": "Condition" },
+    "id": "691cf907-284b-43fc-90e7-6b3e16813cda",
+    "z": 6,
+    "attrs": {
+      "body": {
+        "fill": "transparent",
+        "stroke": "#400080",
+        "refPoints": "0,10 10,0 20,10 10,20"
+      },
+      "label": {
+        "fill": "#400080",
+        "text": "If",
+        "function": "export default interaction => {\n    return true;\n};"
+      }
+    }
+  },
+  {
+    "type": "standard.Link",
+    "source": { "id": "691cf907-284b-43fc-90e7-6b3e16813cda" },
+    "target": { "id": "49d86405-0f12-4aaf-b80a-1a6c7436e975" },
+    "root": { "title": "Link" },
+    "id": "6c886524-82fb-44de-8861-56715ba83a59",
+    "router": { "name": "orthogonal" },
+    "z": 7,
+    "labels": [{ "attrs": { "text": { "text": "" } } }],
+    "attrs": { "line": { "stroke": "#000000" }, "label": { "text": "Yes" } }
+  },
+  {
+    "type": "standard.Link",
+    "source": { "id": "691cf907-284b-43fc-90e7-6b3e16813cda" },
+    "target": { "id": "5303d17a-c330-4a24-9e66-14d5487d70c8" },
+    "root": { "title": "Link" },
+    "id": "fe88eedb-7f21-4e1b-8379-f8bd4a1906cd",
+    "router": { "name": "orthogonal" },
+    "z": 8,
+    "labels": [{ "attrs": { "text": { "text": "No" } } }],
+    "attrs": {
+      "line": { "stroke": "#FF0000", "stroke-dasharray": 0 },
+      "label": { "text": "No" }
+    }
+  },
+  {
+    "type": "standard.Link",
+    "source": { "id": "49d86405-0f12-4aaf-b80a-1a6c7436e975" },
+    "target": { "id": "5303d17a-c330-4a24-9e66-14d5487d70c8" },
+    "root": { "title": "Link" },
+    "id": "1e041b75-68d1-4993-8813-b8915111caed",
+    "router": { "name": "orthogonal" },
+    "z": 9,
+    "labels": [{ "attrs": { "text": { "text": "Error" } } }],
+    "vertices": [{ "x": 4860, "y": 530 }],
+    "attrs": {
+      "line": { "stroke": "#FF0000", "stroke-dasharray": 2 },
+      "label": { "text": "Error" }
+    }
+  },
+  {
+    "type": "standard.Link",
+    "source": { "id": "fd50492b-9dc0-4baf-8bcc-825aa5dcf57e" },
+    "target": { "id": "5303d17a-c330-4a24-9e66-14d5487d70c8" },
+    "root": { "title": "Link" },
+    "id": "125c7af0-f8fc-46b4-9940-22a10d07172b",
+    "router": { "name": "orthogonal" },
+    "z": 10,
+    "labels": [{ "attrs": { "text": { "text": "Error" } } }],
+    "vertices": [{ "x": 5160, "y": 410 }],
+    "attrs": {
+      "line": { "stroke": "#FF0000", "stroke-dasharray": 2 },
+      "label": { "text": "Error" }
+    }
+  }
+]

@@ -1,0 +1,7 @@
+{
+  "jwtPrivateKey": "Fire-Core",
+  "dbUrl": "mongodb://localhost:27017/FIRE_DEV",
+  "firePort": "80",
+  "frontend": "http://cloud.firemisc.com",
+  "backend": "http://cloud.firemisc.com"
+}
