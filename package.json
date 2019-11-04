@@ -12,8 +12,8 @@
     "Center",
     "Cloud"
   ],
-  "author": "Mamdouh Aref (maref@firemisc.com)",
-  "license": "MIT",
+  "author": "Mamdouh Aref (aref.mamdouh@gmail.com)",
+  "license": "GNU",
   "devDependencies": {
     "jest": "^24.9.0",
     "jshint": "^2.10.2"
