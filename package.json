@@ -1,5 +1,5 @@
 {
-  "name": "fire",
+  "name": "fire-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -16,25 +16,25 @@
   "license": "GNU",
   "devDependencies": {
     "jest": "^24.9.0",
-    "jshint": "^2.10.2"
+    "jshint": "^2.12.0"
   },
   "dependencies": {
-    "bcrypt": "^3.0.6",
-    "config": "^3.2.4",
+    "bcrypt": "^3.0.8",
+    "config": "^3.3.6",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
-    "express-fileupload": "^1.1.6-alpha.6",
-    "generate-password": "^1.4.2",
+    "express-fileupload": "^1.2.1",
+    "generate-password": "^1.6.0",
     "global": "^4.4.0",
     "gmail-send": "^1.8.10",
-    "helmet": "^3.21.2",
+    "helmet": "^3.23.3",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.15",
-    "moment": "^2.24.0",
-    "mongoose": "^5.7.7",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1",
+    "mongoose": "^5.11.19",
     "nodemon": "^2.0.7",
-    "socket.io": "^2.3.0",
-    "winston": "^3.2.1"
+    "socket.io": "^2.4.1",
+    "winston": "^3.3.3"
   }
 }
