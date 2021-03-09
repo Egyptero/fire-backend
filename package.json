@@ -25,6 +25,7 @@
     "express-async-errors": "^3.1.1",
     "express-fileupload": "^1.1.6-alpha.6",
     "generate-password": "^1.4.2",
+    "global": "^4.4.0",
     "gmail-send": "^1.8.10",
     "helmet": "^3.21.2",
     "joi": "^14.3.1",
@@ -32,6 +33,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "mongoose": "^5.7.7",
+    "nodemon": "^2.0.7",
     "socket.io": "^2.3.0",
     "winston": "^3.2.1"
   }

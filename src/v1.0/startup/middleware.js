@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("../middleware/cors");
 const helmet = require("helmet");
 const fileupload = require("express-fileupload");
-module.exports = function(app) {
+module.exports = (app) => {
   app.use(helmet());
   app.use(express.static("public"));
   app.use(express.json());
