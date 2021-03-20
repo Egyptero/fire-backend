@@ -266,7 +266,7 @@ module.exports = function(app) {
     authorize,
     verifyTenantID,
     validateTenant,
-    shouldBeBusiness,
+    shouldBeAgent,//shouldBeBusiness
     tenantUsers
   );
   app.use(
@@ -274,7 +274,7 @@ module.exports = function(app) {
     authorize,
     verifyTenantID,
     validateTenant,
-    shouldBeBusiness,
+    shouldBeAgent,//shouldBeBusiness
     tenantSkillgroups
   );
   app.use(
@@ -298,7 +298,7 @@ module.exports = function(app) {
     authorize,
     verifyTenantID,
     validateTenant,
-    shouldBeBusiness,
+    shouldBeAgent, //shouldBeBusiness
     tenantTypes
   );
   app.use(
