@@ -70,7 +70,7 @@ const shouldBeUser = require("../middleware/auth/shouldBeUser");
 
 const authorize = require("../middleware/auth");
 
-module.exports = function(app) {
+module.exports = function (app) {
   app.get("/", (req, res) => {
     res.sendFile("index.html");
   });
@@ -266,7 +266,7 @@ module.exports = function(app) {
     authorize,
     verifyTenantID,
     validateTenant,
-    shouldBeAgent,//shouldBeBusiness
+    shouldBeAgent, //shouldBeBusiness
     tenantUsers
   );
   app.use(
@@ -274,7 +274,7 @@ module.exports = function(app) {
     authorize,
     verifyTenantID,
     validateTenant,
-    shouldBeAgent,//shouldBeBusiness
+    shouldBeAgent, //shouldBeBusiness
     tenantSkillgroups
   );
   app.use(
@@ -282,7 +282,7 @@ module.exports = function(app) {
     authorize,
     verifyTenantID,
     validateTenant,
-    shouldBeBusiness,
+    shouldBeAgent, //shouldBeBusiness
     tenantCustomers
   );
   app.use(

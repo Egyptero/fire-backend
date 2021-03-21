@@ -7,7 +7,7 @@ module.exports.Type = mongoose.model(
     name: {
       type: String,
       required: true,
-      min: 5
+      min: 5,
     },
     channel: {
       type: String,
@@ -29,30 +29,34 @@ module.exports.Type = mongoose.model(
         "Email",
         "Webrtc",
         "Project",
-        "Custom"
+        "Custom",
       ],
-      default: "Custom"
+      default: "Custom",
     },
     description: String,
     tenantId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Tenant",
-      required: true
+      required: true,
     },
     workflowId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Workflow"
-    }
+      ref: "Workflow",
+    },
+    sla: {
+      type: Number,
+      required: false,
+    }, // SLA in seconds
+    oona: {
+      type: Number,
+      required: false,
+    }, // Offer on no accept
   })
 );
 
-module.exports.validate = function(data) {
+module.exports.validate = function (data) {
   const typeSchema = {
-    name: joi
-      .string()
-      .min(3)
-      .max(20)
-      .required(),
+    name: joi.string().min(3).max(20).required(),
     description: joi.string().max(2048),
     channel: joi
       .string()
@@ -73,11 +77,13 @@ module.exports.validate = function(data) {
         "Email",
         "Webrtc",
         "Project",
-        "Custom"
+        "Custom",
       ])
       .required(),
     tenantId: joi.string().required(),
-    workflowId: joi.string()
+    workflowId: joi.string(),
+    sla: joi.number().min(3).max(999), //Max SLA is 999 and min 3 seconds
+    oona: joi.number().min(3).max(9999), // Max OONA (Offer on no answer) min is 3 and max is 9999 seconds
   };
   return joi.validate(data, typeSchema);
 };
