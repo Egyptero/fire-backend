@@ -6,33 +6,34 @@ module.exports.Interaction = mongoose.model(
   new mongoose.Schema({
     fromAddress: String,
     toAddress: String,
+    crmlink: String,
     ani: String,
     dnis: String,
     dialNumber: String,
     nodeId: String,
     workflowId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Workflow"
+      ref: "Workflow",
     },
     skillgroupId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Skillgroup"
+      ref: "Skillgroup",
     },
     tenantId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Tenant"
+      ref: "Tenant",
     },
     agentId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
+      ref: "User",
     },
     customerId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Customer"
+      ref: "Customer",
     },
     transactionId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Transaction"
+      ref: "Transaction",
     },
     attached: Object,
     data: Object,
@@ -41,27 +42,27 @@ module.exports.Interaction = mongoose.model(
         message: String,
         timestamp: {
           type: Date,
-          default: Date.now()
+          default: Date.now(),
         },
         from: {
           id: mongoose.Schema.Types.ObjectId,
           type: {
             type: String,
-            enum: ["User", "Customer"]
+            enum: ["User", "Customer"],
           },
-          name: String
+          name: String,
         },
         to: {
           id: mongoose.Schema.Types.ObjectId,
           type: {
             type: String,
-            enum: ["User", "Customer"]
+            enum: ["User", "Customer"],
           },
-          name: String
+          name: String,
         },
         delivered: Boolean,
-        seen: Boolean
-      }
+        seen: Boolean,
+      },
     ],
     subType: {
       type: String,
@@ -76,21 +77,21 @@ module.exports.Interaction = mongoose.model(
         "Hashtag",
         "Voice",
         "Video",
-        "Webrtc"
-      ]
+        "Webrtc",
+      ],
     },
     direction: {
       type: String,
       enum: ["Inbound", "Outbound"],
-      default: "Inbound"
+      default: "Inbound",
     },
     creationDate: {
       type: Date,
-      default: Date.now
+      default: Date.now,
     },
     lastModifiedDate: {
       type: Date,
-      default: Date.now
+      default: Date.now,
     },
     stage: {
       type: String,
@@ -108,60 +109,39 @@ module.exports.Interaction = mongoose.model(
         "Close",
         "Terminate",
         "Accept",
-        "Reject"
-      ]
+        "Reject",
+      ],
     },
     typeId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Type"
+      ref: "Type",
     },
     schedule: {
       type: Date,
-      default: Date.now()
+      default: Date.now(),
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
+      ref: "User",
     },
     modifiedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
-    }
+      ref: "User",
+    },
   })
 );
 
-module.exports.validate = function(data) {
+module.exports.validate = function (data) {
   const interactionSchema = {
-    fromAddress: joi
-      .string()
-      .min(3)
-      .max(100),
-    toAddress: joi
-      .string()
-      .min(3)
-      .max(100),
-    ani: joi
-      .string()
-      .min(3)
-      .max(20),
-    dnis: joi
-      .string()
-      .min(3)
-      .max(20),
-    dialNumber: joi
-      .string()
-      .min(3)
-      .max(20),
+    fromAddress: joi.string().min(3).max(100),
+    toAddress: joi.string().min(3).max(100),
+    ani: joi.string().min(3).max(20),
+    dnis: joi.string().min(3).max(20),
+    dialNumber: joi.string().min(3).max(20),
     skillgroupId: joi.string(),
     tenantId: joi.string(),
-    agentId: joi
-      .string()
-      .min(3)
-      .max(100),
-    transactionId: joi
-      .string()
-      .min(3)
-      .max(100),
+    agentId: joi.string().min(3).max(100),
+    transactionId: joi.string().min(3).max(100),
     attached: joi.object(),
     data: joi.object(),
     conversationData: joi.array(),
@@ -186,12 +166,9 @@ module.exports.validate = function(data) {
         "Close",
         "Terminate",
         "Accept",
-        "Reject"
+        "Reject",
       ]),
-    typeId: joi
-      .string()
-      .min(3)
-      .max(100),
+    typeId: joi.string().min(3).max(100),
     subType: joi
       .string()
       .valid([
@@ -206,9 +183,9 @@ module.exports.validate = function(data) {
         "Hashtag",
         "Voice",
         "Video",
-        "Webrtc"
+        "Webrtc",
       ]),
-    direction: joi.string().valid(["Inbound", "Outbound"])
+    direction: joi.string().valid(["Inbound", "Outbound"]),
   };
   return joi.validate(data, interactionSchema);
 };
