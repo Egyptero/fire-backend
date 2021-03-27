@@ -11,34 +11,34 @@ let userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    min: 5
+    min: 5,
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   otherEmails: [
     {
-      type: String
+      type: String,
       //unique: true
-    }
+    },
   ],
   skillIds: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Skillgroup"
-    }
+      ref: "Skillgroup",
+    },
   ],
   tenantIds: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Tenant"
-    }
+      ref: "Tenant",
+    },
   ],
   status: {
     type: mongoose.Schema.Types.String,
@@ -52,9 +52,9 @@ let userSchema = new mongoose.Schema({
       "Reserved",
       "Handling",
       "Error",
-      "Logged Out"
+      "Logged Out",
     ],
-    default: "Unknown"
+    default: "Unknown",
   },
   nextStatus: {
     type: mongoose.Schema.Types.String,
@@ -68,20 +68,20 @@ let userSchema = new mongoose.Schema({
       "Reserved",
       "Handling",
       "Error",
-      "Logged Out"
-    ]
+      "Logged Out",
+    ],
   },
   inStateTime: {
     type: Date,
-    default: Date.now()
+    default: Date.now(),
   },
   odi: {
     type: Boolean,
-    default: false
+    default: false,
   },
   phone: {
     type: Boolean,
-    default: false
+    default: false,
   },
   sipServer: String,
   sipUserName: String,
@@ -89,11 +89,11 @@ let userSchema = new mongoose.Schema({
   sipUri: String,
   sipStatus: {
     type: String,
-    enum: ["Unknown", "Connected", "Disconnected"]
+    enum: ["Unknown", "Connected", "Disconnected"],
   },
   sharedAgent: {
     type: Boolean,
-    default: false
+    default: false,
   },
   role: {
     type: String,
@@ -104,64 +104,64 @@ let userSchema = new mongoose.Schema({
       "Leader",
       "Business",
       "Administrator",
-      "SysAdmin"
+      "SysAdmin",
     ],
-    default: "User"
+    default: "User",
   },
   lastModifiedDate: {
     type: Date,
-    default: Date.now()
+    default: Date.now(),
   },
   creationDate: {
     type: Date,
-    default: Date.now()
+    default: Date.now(),
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true
+    required: true,
   },
   modifiedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true
+    required: true,
   },
   mode: {
     type: String,
     enum: ["Push", "Pull", "Mixed"],
-    default: "Push"
+    default: "Push",
   },
   interactionIds: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Interaction"
-    }
+      ref: "Interaction",
+    },
   ],
   managerId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
+    ref: "User",
   },
   accountStatus: {
     type: String,
     enum: ["Pending", "Active", "Inactive", "Archived", "Suspended"],
-    default: "Pending"
+    default: "Pending",
   },
   accountType: {
     type: String,
     enum: ["Free", "Class A", "Class B", "Class C"],
-    default: "Free"
+    default: "Free",
   },
   receiveUpdates: {
     type: Boolean,
-    default: true
+    default: true,
   },
   type: {
     type: String,
-    enum: ["User", "Company"]
-  }
+    enum: ["User", "Company"],
+  },
 });
 
-userSchema.methods.generateAuthToken = function() {
+userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(
     {
       _id: this._id,
@@ -185,13 +185,13 @@ userSchema.methods.generateAuthToken = function() {
       sipStatus: this.sipStatus,
       type: this.type,
       accountStatus: this.accountStatus,
-      accountType: this.accountType
+      accountType: this.accountType,
     },
     config.get("jwtPrivateKey")
   );
   return token;
 };
-userSchema.methods.hashPassword = async function() {
+userSchema.methods.hashPassword = async function () {
   if (!this.password) return;
   const salt = await bcrypt.genSalt(10);
   const hashed = await bcrypt.hash(this.password, salt);
@@ -199,29 +199,13 @@ userSchema.methods.hashPassword = async function() {
 };
 module.exports.User = mongoose.model("user", userSchema);
 
-module.exports.validate = function(data) {
+module.exports.validate = function (data) {
   const schema = {
-    firstname: joi
-      .string()
-      .min(3)
-      .max(20),
-    lastname: joi
-      .string()
-      .min(3)
-      .max(20),
-    username: joi
-      .string()
-      .min(5)
-      .required(),
-    password: joi
-      .string()
-      .min(8)
-      .max(200)
-      .required(),
-    email: joi
-      .string()
-      .email()
-      .required(),
+    firstname: joi.string().min(3).max(20),
+    lastname: joi.string().min(3).max(20),
+    username: joi.string().min(5).required(),
+    password: joi.string().min(8).max(200).required(),
+    email: joi.string().email().required(),
     sharedAgent: joi.boolean(),
     otherEmails: joi.array().valid(joi.string().email()),
     modifiedBy: joi.string().min(3),
@@ -238,10 +222,8 @@ module.exports.validate = function(data) {
     sipPassword: joi.string(),
     sipStatus: joi.string().valid(["Unknown", "Connected", "Disconnected"]),
     receiveUpdates: joi.boolean(),
-    type: joi
-      .string()
-      .valid(["User", "Company"])
-      .optional()
+    type: joi.string().valid(["User", "Company"]).optional(),
+    inStateTime: joi.date().optional,
   };
   return joi.validate(data, schema);
 };

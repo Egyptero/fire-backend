@@ -5,8 +5,10 @@ const getStateButtons = require("../messages/getStateButtons");
 const {
   changeUserState,
   sendApplicationMessage,
-  getEventManager
+  getEventManager,
 } = require("../EventManager");
+const workflowTrigger = require("../../../functions/router/workflow/workflowTrigger");
+const winston = require("winston");
 
 module.exports = async (socket, data, requester) => {
   //console.log(data);
@@ -16,7 +18,7 @@ module.exports = async (socket, data, requester) => {
     buttons: {},
     status: "Unknown",
     nextStatus: "Unknown",
-    inStateTime: Date.now()
+    inStateTime: Date.now(),
   };
   let user = await User.findById(requester._id);
   if (!user) {
@@ -39,7 +41,6 @@ module.exports = async (socket, data, requester) => {
 
   await user.save();
   logUserChange(user, "Update", requester._id);
-
   stateResult.action = "state";
   stateResult.message = "Change State";
   stateResult.buttons = getStateButtons(user.status);
@@ -48,9 +49,15 @@ module.exports = async (socket, data, requester) => {
   stateResult.inStateTime = user.inStateTime;
 
   changeUserState(user);
-  return await sendApplicationMessage(
+  let outcome = await sendApplicationMessage(
     "state",
     getEventManager(user)[0],
     stateResult
   );
+
+  if (user.status === "Ready") {
+    winston.info(`Agent is ready and we should pickup task from Queue`);
+    workflowTrigger(requester);
+  }
+  return outcome;
 };

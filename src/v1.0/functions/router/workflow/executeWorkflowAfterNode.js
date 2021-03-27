@@ -51,7 +51,7 @@ module.exports = async (interaction, requester, sourceResultPath) => {
   }
 
   while (node) {
-    let resultPath = await executeNode(node, interaction, workflow, requester);
+    let resultPath = await require("./executeNode")(node, interaction, workflow, requester);
     interaction = await Interaction.findById(interaction._id);
     if (resultPath === "Hold") {
       winston.info(

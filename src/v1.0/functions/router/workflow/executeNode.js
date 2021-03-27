@@ -7,8 +7,10 @@ const executeConditionNode = require("./nodes/executeConditionNode");
 const executeStartNode = require("./nodes/executeStartNode");
 const executeStopNode = require("./nodes/executeStopNode");
 const { startNodeLog, stopNodeLog } = require("../../logger/logNode");
+const winston = require("winston");
 
-module.exports = async (node, interaction, workflow, requester) => {
+module.exports = async (node, interaction, workflow, requester, agentReady) => {
+  winston.info(` @@@ Execute note ${node.id}`);
   let resultPath = "Yes";
   let nodeId = await startNodeLog({
     nodeName: node.root.title,
@@ -17,16 +19,21 @@ module.exports = async (node, interaction, workflow, requester) => {
     workflowId: workflow._id.toHexString(),
     interactionId: interaction._id.toHexString(),
     dateIn: Date.now(),
-    state: "In"
+    state: "In",
   });
   switch (node.root.title) {
     case "Queue":
-      resultPath = await executeQueueToSkillNode(
-        node,
-        interaction,
-        workflow,
-        requester
-      );
+      try {
+        resultPath = await executeQueueToSkillNode(
+          node,
+          interaction,
+          workflow,
+          requester,
+          agentReady
+        );
+      } catch (e) {
+        console.log(e);
+      }
       break;
     case "Bot":
       resultPath = executeSendToBotNode(node, interaction, workflow, requester);
@@ -84,7 +91,7 @@ module.exports = async (node, interaction, workflow, requester) => {
       workflowName: workflow.name,
       nodeId: node.id,
       dateOut: Date.now(),
-      state: resultPath
+      state: resultPath,
     });
   return resultPath;
 };

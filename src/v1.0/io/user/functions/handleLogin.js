@@ -11,6 +11,9 @@ const {
   sendApplicationMessage,
   getEventManager,
 } = require("../EventManager");
+
+const workflowTrigger = require("../../../functions/router/workflow/workflowTrigger");
+const winston = require("winston");
 module.exports = async (socket, data, requester) => {
   //console.log(data);
   let loginResult = {
@@ -41,7 +44,8 @@ module.exports = async (socket, data, requester) => {
     user.nextStatus = "Logged In";
     user.inStateTime = Date.now();
   } else user.nextStatus = user.status;
-  if (user.inStateTime && user.inStateTime.length > 0) // In case we cannot find instate timer at login
+  if (user.inStateTime && user.inStateTime.length > 0)
+    // In case we cannot find instate timer at login
     user.inStateTime = Date.now();
   user.modifiedBy = requester._id;
   user.lastModifiedDate = Date.now();
@@ -60,6 +64,13 @@ module.exports = async (socket, data, requester) => {
 
   await registerUser(socket, user);
   sendApplicationMessage("login", getEventManager(user)[0], loginResult);
+  if (user.status === "Ready") {
+    winston.info(
+      `Agent is ready at login and we should pickup task from Queue`
+    );
+    workflowTrigger(requester);
+  }
+
   //We need to load the current agent interactions and send it to them
   //console.log("Log current user interactions");
   //console.log(user.interactionIds);
@@ -70,6 +81,12 @@ module.exports = async (socket, data, requester) => {
   interactions.forEach(async (interaction, index) => {
     switch (interaction.stage) {
       case "Offer":
+        // user = await sendAgentState(
+        //   getEventManager(user)[0],
+        //   { status: "Reserved" },
+        //   user
+        // );
+
         sendApplicationMessage(
           "addinteraction",
           getEventManager(user)[0],

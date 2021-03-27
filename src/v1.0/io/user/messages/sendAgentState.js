@@ -3,6 +3,8 @@ const { User } = require("../../../models/user");
 const { buttons } = require("../../common/userTools");
 const logUserChange = require("../../../functions/logger/logUserChange");
 const getStateButtons = require("./getStateButtons");
+const workflowTrigger = require("../../../functions/router/workflow/workflowTrigger");
+const winston = require("winston");
 module.exports = async (eventManager, data, requester) => {
   console.log(
     `Agent ${eventManager.user.firstname} ${eventManager.user.lastname} state will be changed to:${data.status}`
@@ -30,6 +32,7 @@ module.exports = async (eventManager, data, requester) => {
 
   await user.save();
   logUserChange(user, "Update", requester._id);
+
   stateResult.action = "state";
   stateResult.message = "Change State";
   stateResult.buttons = getStateButtons(user.status);
@@ -38,5 +41,11 @@ module.exports = async (eventManager, data, requester) => {
   stateResult.inStateTime = user.inStateTime;
 
   sendMessage(eventManager.socket, stateResult, "Message");
+  //We should trigger work flow here about ready user , in future we should consider capacity routing here
+  if (user.status === "Ready") {
+    winston.info(`Agent is ready and we should pickup task from Queue`);
+    workflowTrigger(requester);
+  }
+
   return user;
 };

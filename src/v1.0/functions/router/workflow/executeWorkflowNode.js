@@ -1,11 +1,11 @@
 const winston = require("winston");
 const findNext = require("./findNext");
 const findNode = require("./findNode");
-const executeNode = require("./executeNode");
+//const executeNode = require("./executeNode");
 const { Workflow } = require("../../../models/workflow");
 const { Interaction } = require("../../../models/interaction");
 const logInteractionChange = require("../../logger/logInteractionChange");
-module.exports = async (interaction, requester) => {
+module.exports = async (interaction, requester , agentReady) => {
   let workflow = await Workflow.findById(interaction.workflowId);
   if (!workflow) {
     interaction.stage = "Error";
@@ -29,7 +29,8 @@ module.exports = async (interaction, requester) => {
   );
   let node = findNode(workflow, interaction.nodeId);
   while (node) {
-    let resultPath = await executeNode(node, interaction, workflow, requester);
+    //For some reason , it was not able to require in the top ... ???????
+    let resultPath = await require("./executeNode")(node, interaction, workflow, requester,agentReady);
     interaction = await Interaction.findById(interaction._id);
     if (resultPath === "Hold") {
       winston.info(
