@@ -18,7 +18,8 @@ router.get("/", async (req, res) => {
     "mode",
     "managerId",
     "sharedAgent",
-    "status"
+    "status",
+    "inStateTime",
   ]);
   return res.send(users);
 });
