@@ -5,9 +5,7 @@ const logUserChange = require("../../../functions/logger/logUserChange");
 const getStateButtons = require("./getStateButtons");
 module.exports = async (eventManager, data, requester) => {
   console.log(
-    `Agent ${eventManager.user.firstname} ${
-      eventManager.user.lastname
-    } state will be changed to:${data.status}`
+    `Agent ${eventManager.user.firstname} ${eventManager.user.lastname} state will be changed to:${data.status}`
   );
 
   //Rules of changing state.
@@ -17,7 +15,8 @@ module.exports = async (eventManager, data, requester) => {
     message: "",
     buttons: { ...buttons },
     status: "Unknown",
-    nextStatus: "Unknown"
+    nextStatus: "Unknown",
+    inStateTime: Date.now(),
   };
   let user = await User.findById(eventManager.user._id);
   //In case we do not have requester , then we should consider same user as requester
@@ -27,6 +26,7 @@ module.exports = async (eventManager, data, requester) => {
 
   user.modifiedBy = requester._id;
   user.lastModifiedDate = Date.now();
+  user.inStateTime = Date.now();
 
   await user.save();
   logUserChange(user, "Update", requester._id);
@@ -35,6 +35,7 @@ module.exports = async (eventManager, data, requester) => {
   stateResult.buttons = getStateButtons(user.status);
   stateResult.status = user.status;
   stateResult.nextStatus = user.nextStatus;
+  stateResult.inStateTime = user.inStateTime;
 
   sendMessage(eventManager.socket, stateResult, "Message");
   return user;

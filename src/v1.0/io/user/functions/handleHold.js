@@ -15,13 +15,13 @@ const {
 } = require("../EventManager");
 
 module.exports = async (socket, data, requester) => {
-  console.log(data);
+  //console.log(data);
   let stateResult = {
     action: "Error",
     message: "",
     buttons: {},
     status: "Unknown",
-    nextStatus: "Unknown"
+    nextStatus: "Unknown",
   };
   let interaction = await Interaction.findById(data.interactionId);
   let user = await User.findById(requester._id);

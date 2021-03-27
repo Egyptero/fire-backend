@@ -72,7 +72,8 @@ let userSchema = new mongoose.Schema({
     ]
   },
   inStateTime: {
-    type: Date
+    type: Date,
+    default: Date.now()
   },
   odi: {
     type: Boolean,

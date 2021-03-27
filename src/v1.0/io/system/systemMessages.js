@@ -2,12 +2,15 @@ const winston = require("winston");
 const { validateOutput } = require("../validation/messageValidation");
 
 module.exports = (socket, data, event) => {
+  //console.log("Trying to send the following message to user",data);
   const { error } = validateOutput(data);
+
   if (error) {
+    console.log("Validation before sending and error is", error);
     socket.emit("Error", {
       message: "Internal Server Error",
       details: error.details[0].message,
-      error: error
+      error: error,
     });
     return false;
   }

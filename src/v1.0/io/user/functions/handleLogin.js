@@ -9,16 +9,17 @@ const {
   changeUserState,
   registerUser,
   sendApplicationMessage,
-  getEventManager
+  getEventManager,
 } = require("../EventManager");
 module.exports = async (socket, data, requester) => {
-  console.log(data);
+  //console.log(data);
   let loginResult = {
     action: "Error",
     message: "",
     buttons: { ...buttons },
     status: "Unknown",
-    nextStatus: "Unknown"
+    nextStatus: "Unknown",
+    inStateTime: Date.now(),
   };
 
   let user = await User.findById(requester._id);
@@ -27,6 +28,7 @@ module.exports = async (socket, data, requester) => {
     loginResult.buttons = getStateButtons("Unknown");
     return sendMessage(socket, loginResult, "Error");
   }
+  //console.log("Current user status at login ,", user.status);
   if (
     !user.status ||
     user.status === "Unknown" ||
@@ -37,28 +39,33 @@ module.exports = async (socket, data, requester) => {
   ) {
     user.status = "Logged In";
     user.nextStatus = "Logged In";
+    user.inStateTime = Date.now();
   } else user.nextStatus = user.status;
-
+  if (user.inStateTime && user.inStateTime.length > 0) // In case we cannot find instate timer at login
+    user.inStateTime = Date.now();
   user.modifiedBy = requester._id;
   user.lastModifiedDate = Date.now();
   user.interactionIds = [];
   await user.save();
+
   logUserChange(user, "Update", requester._id);
+  //console.log("User login is requested ...", user);
 
   loginResult.action = "login";
   loginResult.message = "Logged In";
   loginResult.buttons = getStateButtons(user.status);
   loginResult.status = user.status;
   loginResult.nextStatus = user.nextStatus;
+  loginResult.inStateTime = user.inStateTime;
 
   await registerUser(socket, user);
   sendApplicationMessage("login", getEventManager(user)[0], loginResult);
   //We need to load the current agent interactions and send it to them
-  console.log("Log current user interactions");
-  console.log(user.interactionIds);
+  //console.log("Log current user interactions");
+  //console.log(user.interactionIds);
   let interactions = await Interaction.find({
     agentId: user._id,
-    $or: [{ stage: "Offer" }, { stage: "Handle" }, { stage: "Hold" }]
+    $or: [{ stage: "Offer" }, { stage: "Handle" }, { stage: "Hold" }],
   });
   interactions.forEach(async (interaction, index) => {
     switch (interaction.stage) {

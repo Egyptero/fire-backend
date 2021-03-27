@@ -20,7 +20,7 @@ const {
   changeUserState: updateUserState,
   registerUser,
   unRegisterUser,
-  getEventManagerBySocket
+  getEventManagerBySocket,
 } = require("./EventManager");
 /*
  * Event Manager is the carrier of the current event manager of the agent
@@ -29,19 +29,20 @@ const {
  *
  */
 
-module.exports.onConnection = socket => {
+module.exports.onConnection = (socket) => {
   let connectionResult = {
     action: "Aknowledge",
     message: "Connected",
     buttons: { ...buttons },
     status: "Unknown",
-    nextStatus: "Unknown"
+    nextStatus: "Unknown",
+    inStateTime: Date.now(),
   };
 
   connectionResult.buttons.login = true;
   sendMessage(socket, connectionResult, "Connected");
   //TODO We need to respond here
-  socket.on("message", async data => {
+  socket.on("message", async (data) => {
     await onUserMessage(socket, data);
   });
 
@@ -53,7 +54,7 @@ module.exports.onConnection = socket => {
     let eventManagerList = getEventManagerBySocket(socket);
     if (eventManagerList && eventManagerList.length > 0) {
       let user = eventManagerList[0].user;
-      console.log(user);
+      //console.log(user);
       if (
         user.status === "Ready" ||
         user.status === "Not ready" ||
@@ -62,9 +63,11 @@ module.exports.onConnection = socket => {
         user.status === "Unknown"
       ) {
         user.status = "Logged Out";
+        user.inStateTime = Date.now();
         await user.save();
       } else if (user.status === "Handling" || user.status === "Reserved") {
         user.status = "Error";
+        user.inStateTime = Date.now();
         await user.save();
       }
 
@@ -74,15 +77,17 @@ module.exports.onConnection = socket => {
 };
 
 const onUserMessage = async (socket, data) => {
-  console.log("New user message");
+  console.log("New user message", data);
   const { error } = validateInput(data);
+  //console.log("New user message , validation", error);
   if (error) {
     let errorResult = {
       action: "Error",
       message: error.details[0].message,
       buttons: { ...buttons },
       status: "Unknown",
-      nextStatus: "Unknown"
+      nextStatus: "Unknown",
+      inStateTime: Date.now(),
     };
     return sendMessage(socket, errorResult, "Error");
   }
@@ -92,7 +97,8 @@ const onUserMessage = async (socket, data) => {
     message: "",
     buttons: { ...buttons },
     status: "Unknown",
-    nextStatus: "Unknown"
+    nextStatus: "Unknown",
+    inStateTime: Date.now(),
   };
 
   const authResult = auth(data);

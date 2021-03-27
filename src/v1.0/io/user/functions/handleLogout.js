@@ -5,17 +5,17 @@ const getStateButtons = require("../messages/getStateButtons");
 const {
   unRegisterUser,
   sendApplicationMessage,
-  getEventManager
+  getEventManager,
 } = require("../EventManager");
 
 module.exports = async (socket, data, requester) => {
-  console.log(data);
+  //console.log(data);
   let logoutResult = {
     action: "Error",
     message: "",
     buttons: {},
     status: "Unknown",
-    nextStatus: "Unknown"
+    nextStatus: "Unknown",
   };
 
   let user = await User.findById(requester._id);
@@ -35,12 +35,14 @@ module.exports = async (socket, data, requester) => {
   ) {
     user.status = "Logged Out";
     user.nextStatus = "Unknown";
+    user.inStateTime = Date.now();
   } else if (
     user.status !== "Handling" &&
     user.status !== "Ready" &&
     user.status !== "Wrap up"
   ) {
     user.nextStatus = "Logged Out";
+    user.inStateTime = Date.now();
   } else {
     logoutResult.message = "User can not logout from this state:" + user.status;
     logoutResult.buttons = getStateButtons(user.status);

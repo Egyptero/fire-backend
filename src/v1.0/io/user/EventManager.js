@@ -102,6 +102,7 @@ const findLAAEventManager = targetSkillId => {
   return lAAEventManager;
 };
 const sendApplicationMessage = async (type, eventManager, data, requester) => {
+  console.log("Send user message,",data);
   if (!type) return;
   switch (type) {
     case "addinteraction":

@@ -9,13 +9,14 @@ const {
 } = require("../EventManager");
 
 module.exports = async (socket, data, requester) => {
-  console.log(data);
+  //console.log(data);
   let stateResult = {
     action: "Error",
     message: "",
     buttons: {},
     status: "Unknown",
-    nextStatus: "Unknown"
+    nextStatus: "Unknown",
+    inStateTime: Date.now()
   };
   let user = await User.findById(requester._id);
   if (!user) {
@@ -30,10 +31,11 @@ module.exports = async (socket, data, requester) => {
   if (user.status !== "Handling" && user.status !== "Reserved") {
     user.status = data.status;
     user.nextStatus = user.status;
+    user.inStateTime = Date.now();
   } else user.nextStatus = data.status;
 
   user.modifiedBy = requester._id;
-  user.lastModifiedDate = Date.now();
+  //user.lastModifiedDate = Date.now();
 
   await user.save();
   logUserChange(user, "Update", requester._id);
@@ -43,6 +45,7 @@ module.exports = async (socket, data, requester) => {
   stateResult.buttons = getStateButtons(user.status);
   stateResult.status = user.status;
   stateResult.nextStatus = user.nextStatus;
+  stateResult.inStateTime = user.inStateTime;
 
   changeUserState(user);
   return await sendApplicationMessage(
