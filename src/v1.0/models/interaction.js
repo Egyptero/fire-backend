@@ -11,6 +11,10 @@ module.exports.Interaction = mongoose.model(
     dnis: String,
     dialNumber: String,
     nodeId: String,
+    priority: {
+      type: mongoose.Schema.Types.Number,
+      default: 0,
+    },
     workflowId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Workflow",
@@ -136,6 +140,7 @@ module.exports.validate = function (data) {
     fromAddress: joi.string().min(3).max(100),
     toAddress: joi.string().min(3).max(100),
     ani: joi.string().min(3).max(20),
+    priority: joi.number(),
     dnis: joi.string().min(3).max(20),
     dialNumber: joi.string().min(3).max(20),
     skillgroupId: joi.string(),

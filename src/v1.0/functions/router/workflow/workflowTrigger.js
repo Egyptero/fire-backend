@@ -11,10 +11,10 @@ module.exports = async (requester) => {
     skillgroupId: { $in: requester.skillIds },
     $or: [{ stage: "Queue" }],
   })
-    .sort({ lastModifiedDate: -1 })
+    .sort({ priority: -1, lastModifiedDate: 1 })
     .limit(1);
   if (interactionInQueue && interactionInQueue.length > 0) {
     let interaction = interactionInQueue[0];
-    if (interaction) await executeWorkflowNode(interaction, requester,"yes");
+    if (interaction) await executeWorkflowNode(interaction, requester, "yes");
   }
 };
