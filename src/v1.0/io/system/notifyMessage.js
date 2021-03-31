@@ -2,7 +2,7 @@ const winston = require("winston");
 const validate = require("../validation/messageValidation");
 
 module.exports = (socket, data, event) => {
-  //console.log("Trying to send the following message to user",data);
+  console.log("Trying to send the following message to user",data);
   const { error } = validate.validateNotificationMsg(data);
 
   if (error) {
