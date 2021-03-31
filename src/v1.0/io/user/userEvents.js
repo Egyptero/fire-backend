@@ -22,6 +22,7 @@ const {
   unRegisterUser,
   getEventManagerBySocket,
 } = require("./EventManager");
+const notifyStatusToManagers = require("./messages/notifyStatusToManagers");
 /*
  * Event Manager is the carrier of the current event manager of the agent
  * Event Manager is loacted in arrage for all logged in Agent where each agent will have his own event manager
@@ -71,7 +72,10 @@ module.exports.onConnection = (socket) => {
         await user.save();
       }
 
-      unRegisterUser(user);
+      await unRegisterUser(user);
+      //We need to notify manager hirarcy now
+      notifyStatusToManagers(user);
+
     }
   });
 };

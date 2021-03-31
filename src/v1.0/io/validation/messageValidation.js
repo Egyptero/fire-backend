@@ -24,6 +24,16 @@ module.exports.validateInput = (input) => {
   return joi.validate(input, schema);
 };
 
+module.exports.validateNotificationMsg = (input) => {
+  const schema = {
+    action: joi.string().min(3).max(100).required(),
+    message: joi.string().optional(),
+    users: joi.array().optional(), // user updates
+    queues: joi.array().optional(), // queue updates
+    kpis: joi.array().optional() // kpi updates
+  };
+  return joi.validate(input, schema);
+};
 module.exports.validateOutput = (input) => {
   const schema = {
     token: joi.string().optional(),

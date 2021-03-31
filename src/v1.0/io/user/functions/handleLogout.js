@@ -7,6 +7,7 @@ const {
   sendApplicationMessage,
   getEventManager,
 } = require("../EventManager");
+const notifyStatusToManagers = require("../messages/notifyStatusToManagers");
 
 module.exports = async (socket, data, requester) => {
   //console.log(data);
@@ -69,6 +70,10 @@ module.exports = async (socket, data, requester) => {
   if (user.status === "Logged Out") {
     sendApplicationMessage("logout", getEventManager(user)[0], logoutResult);
     await unRegisterUser(user);
-  } else
+  } else 
     sendApplicationMessage("state", getEventManager(user)[0], logoutResult);
+
+    //We need to notify manager hirarcy now
+  notifyStatusToManagers(user);
+  
 };

@@ -5,6 +5,8 @@ const logUserChange = require("../../../functions/logger/logUserChange");
 const getStateButtons = require("./getStateButtons");
 const workflowTrigger = require("../../../functions/router/workflow/workflowTrigger");
 const winston = require("winston");
+const notifyMessage = require("../../system/notifyMessage");
+const notifyStatusToManagers = require("./notifyStatusToManagers");
 module.exports = async (eventManager, data, requester) => {
   console.log(
     `Agent ${eventManager.user.firstname} ${eventManager.user.lastname} state will be changed to:${data.status}`
@@ -41,6 +43,9 @@ module.exports = async (eventManager, data, requester) => {
   stateResult.inStateTime = user.inStateTime;
 
   sendMessage(eventManager.socket, stateResult, "Message");
+  
+  //We need to notify manager hirarcy now
+  notifyStatusToManagers(user);
   //We should trigger work flow here about ready user , in future we should consider capacity routing here
   if (user.status === "Ready") {
     winston.info(`Agent is ready and we should pickup task from Queue`);

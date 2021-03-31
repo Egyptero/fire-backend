@@ -9,6 +9,7 @@ const {
 } = require("../EventManager");
 const workflowTrigger = require("../../../functions/router/workflow/workflowTrigger");
 const winston = require("winston");
+const notifyStatusToManagers = require("../messages/notifyStatusToManagers");
 
 module.exports = async (socket, data, requester) => {
   //console.log(data);
@@ -54,7 +55,8 @@ module.exports = async (socket, data, requester) => {
     getEventManager(user)[0],
     stateResult
   );
-
+  //We need to notify manager hirarcy now
+  notifyStatusToManagers(user);
   if (user.status === "Ready") {
     winston.info(`Agent is ready and we should pickup task from Queue`);
     workflowTrigger(requester);
