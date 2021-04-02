@@ -2,6 +2,7 @@ const winston = require("winston");
 const notifyMessage = require("../../system/notifyMessage");
 const eventManager = require("../EventManager");
 const _ = require("lodash");
+const { User } = require("../../../models/user");
 
 module.exports = async (user) => {
   winston.info(
@@ -25,8 +26,9 @@ module.exports = async (user) => {
       managerEventManager = eventManagerList[0];
       notifyResult.message = "Success";
       notifyResult.action = "Notify";
+      notifyResult.users = [];
       notifyResult.users.push(
-        _.pick(currentUser, [
+        _.pick(user, [
           "_id",
           "firstname",
           "lastname",
@@ -45,10 +47,20 @@ module.exports = async (user) => {
       );
       notifyMessage(managerEventManager.socket, notifyResult, "Notify");
       winston.info(
-        `notify manager name ${managerEventManager.user.firstname} about user ${currentUser.firstname}`
+        `notify manager name ${managerEventManager.user.firstname} ${managerEventManager.user.lastname} about user ${user.firstname} ${user.lastname}`
       );
       currentUser = _.cloneDeep(managerEventManager.user);
-      if (currentUser.role == "Administrator") return; // Max level is admin
-    } else return;
+
+      //
+      if (
+        currentUser.role == "Administrator" ||
+        JSON.stringify(currentUser._id) ===
+          JSON.stringify(currentUser.managerId)
+      )
+        return; // Max level is admin
+    } else {
+      currentUser = await User.findById(currentUser.managerId);
+      if(!currentUser) return;
+    }
   }
 };

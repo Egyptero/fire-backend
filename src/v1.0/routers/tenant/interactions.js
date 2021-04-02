@@ -6,10 +6,13 @@ const { Interaction } = require("../../models/interaction");
 const verifyCustomerID = require("../../middleware/verifyCustomerID");
 const verifyInteractionID = require("../../middleware/verifyInteractionID");
 const validateCustomer = require("../../middleware/validateCustomer");
+const shouldBeBusiness = require("../../middleware/auth/shouldBeBusiness");
+const shouldBeAgent = require("../../middleware/auth/shouldBeAgent");
 const logInteractionChange = require("../../functions/logger/logInteractionChange");
 const startInteractionProcess = require("../../functions/router/startInteractionProcess");
+
 //Create new interaction
-router.post("/", validateCustomer, async (req, res) => {
+router.post("/", shouldBeAgent,validateCustomer, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -31,6 +34,7 @@ router.post("/", validateCustomer, async (req, res) => {
 //Update interaction
 router.put(
   "/:interactionId",
+  shouldBeAgent,
   verifyCustomerID,
   verifyInteractionID,
   async (req, res) => {
@@ -49,17 +53,22 @@ router.put(
 );
 
 //Delete interaction
-router.delete("/:interactionId", verifyInteractionID, async (req, res) => {
-  const interaction = await Interaction.findByIdAndDelete(
-    req.params.interactionId
-  );
-  if (!interaction) return res.status(404).send("interaction id not found");
-  logInteractionChange(interaction, "Delete", req.user._id);
-  return res.send(interaction);
-});
+router.delete(
+  "/:interactionId",
+  shouldBeBusiness,
+  verifyInteractionID,
+  async (req, res) => {
+    const interaction = await Interaction.findByIdAndDelete(
+      req.params.interactionId
+    );
+    if (!interaction) return res.status(404).send("interaction id not found");
+    logInteractionChange(interaction, "Delete", req.user._id);
+    return res.send(interaction);
+  }
+);
 
 //Get interaction by ID
-router.get("/:interactionId", verifyInteractionID, async (req, res) => {
+router.get("/:interactionId", shouldBeBusiness,verifyInteractionID, async (req, res) => {
   const interaction = await Interaction.findById(req.params.interactionId);
   if (!interaction)
     return res.status(404).send("interaction ID can not be found");
@@ -68,42 +77,21 @@ router.get("/:interactionId", verifyInteractionID, async (req, res) => {
 });
 
 //Get all interactions
-router.get("/", async (req, res) => {
+router.get("/", shouldBeBusiness, async (req, res) => {
   const interactions = await Interaction.find({ tenantId: req.tenantId });
   return res.send(interactions);
 });
 
 function validate(data) {
   const interactionSchema = {
-    fromAddress: joi
-      .string()
-      .min(3)
-      .max(100),
-    toAddress: joi
-      .string()
-      .min(3)
-      .max(100),
-    ani: joi
-      .string()
-      .min(3)
-      .max(20),
-    dnis: joi
-      .string()
-      .min(3)
-      .max(20),
-    dialNumber: joi
-      .string()
-      .min(3)
-      .max(20),
+    fromAddress: joi.string().min(3).max(100),
+    toAddress: joi.string().min(3).max(100),
+    ani: joi.string().min(3).max(20),
+    dnis: joi.string().min(3).max(20),
+    dialNumber: joi.string().min(3).max(20),
     skillgroupId: joi.string(),
-    agentId: joi
-      .string()
-      .min(3)
-      .max(100),
-    transactionId: joi
-      .string()
-      .min(3)
-      .max(100),
+    agentId: joi.string().min(3).max(100),
+    transactionId: joi.string().min(3).max(100),
     attached: joi.object(),
     data: joi.object(),
     conversationData: joi.array(),
@@ -128,7 +116,7 @@ function validate(data) {
         "Close",
         "Terminate",
         "Accept",
-        "Reject"
+        "Reject",
       ]),
     typeId: joi.string().min(3),
     customerId: joi.string().min(3),
@@ -145,9 +133,9 @@ function validate(data) {
         "Hashtag",
         "Voice",
         "Video",
-        "Webrtc"
+        "Webrtc",
       ]),
-    direction: joi.string().valid(["Inbound", "Outbound"])
+    direction: joi.string().valid(["Inbound", "Outbound"]),
   };
   return joi.validate(data, interactionSchema);
 }

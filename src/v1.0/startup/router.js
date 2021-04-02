@@ -306,7 +306,7 @@ module.exports = function (app) {
     authorize,
     verifyTenantID,
     validateTenant,
-    shouldBeBusiness,
+    //shouldBeAgent, //shouldBeBusiness
     tenantInteractions
   );
   app.use(

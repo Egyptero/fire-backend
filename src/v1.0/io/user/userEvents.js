@@ -37,7 +37,7 @@ module.exports.onConnection = (socket) => {
     buttons: { ...buttons },
     status: "Unknown",
     nextStatus: "Unknown",
-    inStateTime: Date.now(),
+    //inStateTime: Date.now(),
   };
 
   connectionResult.buttons.login = true;
