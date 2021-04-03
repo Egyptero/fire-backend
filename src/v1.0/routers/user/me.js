@@ -42,7 +42,22 @@ router.post("/", async (req, res) => {
           "accountStatus",
           "accountType",
           "receiveUpdates",
-          "type"
+          "type",
+          "notifications",
+          "autoAccept",
+          "wrapup",
+          "workbin",
+          "autoLogin",  
+          "interactionCapacity",
+          "caseCapacity",
+          "offerTimeout",
+          "wrapupTimeout",
+          "dailyInteractionTarget",
+          "dailyCaseTarget",
+          "dailyUtilizationTarget",
+          "offlineASATarget",
+          "onlineASATarget",
+      
         ]),
         token
       })
@@ -89,7 +104,21 @@ router.put("/", async (req, res) => {
       "accountStatus",
       "accountType",
       "receiveUpdates",
-      "type"
+      "type",
+      "notifications",
+      "autoAccept",
+      "wrapup",
+      "workbin",
+      "autoLogin",
+      "interactionCapacity",
+      "caseCapacity",
+      "offerTimeout",
+      "wrapupTimeout",
+      "dailyInteractionTarget",
+      "dailyCaseTarget",
+      "dailyUtilizationTarget",
+      "offlineASATarget",
+      "onlineASATarget",    
     ])
   );
 });
@@ -147,7 +176,22 @@ router.get("/", async (req, res) => {
       "sipStatus",
       "accountStatus",
       "accountType",
-      "receiveUpdates"
+      "receiveUpdates",
+      "notifications",
+      "autoAccept",
+      "wrapup",
+      "workbin",
+      "autoLogin",
+      "interactionCapacity",
+      "caseCapacity",
+      "offerTimeout",
+      "wrapupTimeout",
+      "dailyInteractionTarget",
+      "dailyCaseTarget",
+      "dailyUtilizationTarget",
+      "offlineASATarget",
+      "onlineASATarget",
+    
     ])
   );
 });

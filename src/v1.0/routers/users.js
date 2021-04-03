@@ -18,7 +18,7 @@ router.post("/", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   let user = await User.find({ username: req.body.username }).or({
-    email: req.body.email
+    email: req.body.email,
   });
   if (user.length > 0)
     return res.status(404).send("Username or email already exist");
@@ -62,9 +62,24 @@ router.post("/", async (req, res) => {
           "sipStatus",
           "accountStatus",
           "accountType",
-          "receiveUpdates"
+          "receiveUpdates",
+          "notifications",
+          "autoAccept",
+          "wrapup",
+          "workbin",
+          "autoLogin",
+          "interactionCapacity",
+          "caseCapacity",
+          "offerTimeout",
+          "wrapupTimeout",
+          "dailyInteractionTarget",
+          "dailyCaseTarget",
+          "dailyUtilizationTarget",
+          "offlineASATarget",
+          "onlineASATarget",
+      
         ]),
-        token
+        token,
       })
   );
 
@@ -99,7 +114,7 @@ router.put(
     }
     //TODO , we need to review the lastmodifieddate , and modifiedby parameters before complete the saving
     const user = await User.findByIdAndUpdate(req.params.userId, req.body, {
-      new: true
+      new: true,
     });
     if (!user) return res.status(404).send("User id not found");
     logUserChange(user, "Update", req.user._id);
@@ -110,7 +125,7 @@ router.put(
         "lastname",
         "username",
         "email",
-        "role"
+        "role",
       ])
     );
   }
@@ -134,7 +149,7 @@ router.delete(
         "lastname",
         "username",
         "email",
-        "role"
+        "role",
       ])
     );
   }
@@ -158,7 +173,7 @@ router.get(
         "lastname",
         "username",
         "email",
-        "role"
+        "role",
       ])
     );
   }
@@ -173,7 +188,7 @@ router.get("/", auth, shouldBeSysAdmin, async (req, res) => {
     "lastname",
     "username",
     "email",
-    "role"
+    "role",
   ]);
   return res.send(users);
 });

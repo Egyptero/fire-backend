@@ -75,11 +75,67 @@ let userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  interactionCapacity:{
+    type:Number,
+    default:0,
+  },
+  caseCapacity:{
+    type:Number,
+    default:0,
+  },
+  offerTimeout:{
+    type:Number,
+    default:0,
+  },
+  wrapupTimeout:{
+    type:Number,
+    default:0,
+  },
+  dailyInteractionTarget:{
+    type:Number,
+    default:0,
+  },
+  dailyCaseTarget:{
+    type:Number,
+    default:0,
+  },
+  dailyUtilizationTarget:{
+    type:Number,
+    default:0,
+  },
+  offlineASATarget:{
+    type:Number,
+    default:0,
+  },
+  onlineASATarget:{
+    type:Number,
+    default:0,
+  },
   odi: {
     type: Boolean,
     default: false,
   },
   phone: {
+    type: Boolean,
+    default: false,
+  },
+  notifications: {
+    type: Boolean,
+    default: true,
+  },
+  autoAccept:{
+    type: Boolean,
+    default: false,
+  },
+  wrapup:{
+    type: Boolean,
+    default: true,
+  },
+  workbin:{
+    type: Boolean,
+    default: true,
+  },
+  autoLogin:{
     type: Boolean,
     default: false,
   },
@@ -186,6 +242,21 @@ userSchema.methods.generateAuthToken = function () {
       type: this.type,
       accountStatus: this.accountStatus,
       accountType: this.accountType,
+      notifications:this.notifications,
+      autoAccept:this.autoAccept,
+      wrapup:this.wrapup,
+      workbin:this.workbin,
+      autoLogin:this.autoLogin,  
+      interactionCapacity:this.interactionCapacity,
+      caseCapacity:this.caseCapacity,
+      offerTimeout:this.offerTimeout,
+      wrapupTimeout:this.wrapupTimeout,
+      dailyInteractionTarget:this.dailyInteractionTarget,
+      dailyCaseTarget:this.dailyCaseTarget,
+      dailyUtilizationTarget:this.dailyUtilizationTarget,
+      offlineASATarget:this.offlineASATarget,
+      onlineASATarget:this.onlineASATarget,
+    
     },
     config.get("jwtPrivateKey")
   );
@@ -223,7 +294,22 @@ module.exports.validate = function (data) {
     sipStatus: joi.string().valid(["Unknown", "Connected", "Disconnected"]),
     receiveUpdates: joi.boolean(),
     type: joi.string().valid(["User", "Company"]).optional(),
-    inStateTime: joi.date().optional,
+    inStateTime: joi.date().optional(),
+    notifications:joi.boolean(),
+    autoAccept:joi.boolean(),
+    wrapup:joi.boolean(),
+    workbin:joi.boolean(),
+    autoLogin:joi.boolean(),
+    interactionCapacity:joi.number(),
+    caseCapacity:joi.number(),
+    offerTimeout:joi.number(),
+    wrapupTimeout:joi.number(),
+    dailyInteractionTarget:joi.number(),
+    dailyCaseTarget:joi.number(),
+    dailyUtilizationTarget:joi.number(),
+    offlineASATarget:joi.number(),
+    onlineASATarget:joi.number(),
+
   };
   return joi.validate(data, schema);
 };

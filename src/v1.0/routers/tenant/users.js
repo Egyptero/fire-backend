@@ -52,7 +52,22 @@ router.post("/", async (req, res) => {
       "sipStatus",
       "accountStatus",
       "accountType",
-      "receiveUpdates"
+      "receiveUpdates",
+      "notifications",
+      "autoAccept",
+      "wrapup",
+      "workbin",
+      "autoLogin",
+      "interactionCapacity",
+      "caseCapacity",
+      "offerTimeout",
+      "wrapupTimeout",
+      "dailyInteractionTarget",
+      "dailyCaseTarget",
+      "dailyUtilizationTarget",
+      "offlineASATarget",
+      "onlineASATarget",
+  
     ])
   );
 });
@@ -94,7 +109,22 @@ router.put("/:userId", validateUser, async (req, res) => {
       "sipStatus",
       "accountStatus",
       "accountType",
-      "receiveUpdates"
+      "receiveUpdates",
+      "notifications",
+      "autoAccept",
+      "wrapup",
+      "workbin",
+      "autoLogin",
+      "interactionCapacity",
+      "caseCapacity",
+      "offerTimeout",
+      "wrapupTimeout",
+      "dailyInteractionTarget",
+      "dailyCaseTarget",
+      "dailyUtilizationTarget",
+      "offlineASATarget",
+      "onlineASATarget",
+  
     ])
   );
 });
@@ -128,7 +158,22 @@ router.delete("/:userId", validateUser, async (req, res) => {
       "sipStatus",
       "accountStatus",
       "accountType",
-      "receiveUpdates"
+      "receiveUpdates",
+      "notifications",
+      "autoAccept",
+      "wrapup",
+      "workbin",
+      "autoLogin",
+      "interactionCapacity",
+      "caseCapacity",
+      "offerTimeout",
+      "wrapupTimeout",
+      "dailyInteractionTarget",
+      "dailyCaseTarget",
+      "dailyUtilizationTarget",
+      "offlineASATarget",
+      "onlineASATarget",
+  
     ])
   );
 });
@@ -162,7 +207,22 @@ router.get("/:userId", validateUser, async (req, res) => {
       "sipStatus",
       "accountStatus",
       "accountType",
-      "receiveUpdates"
+      "receiveUpdates",
+      "notifications",
+      "autoAccept",
+      "wrapup",
+      "workbin",
+      "autoLogin",
+      "interactionCapacity",
+      "caseCapacity",
+      "offerTimeout",
+      "wrapupTimeout",
+      "dailyInteractionTarget",
+      "dailyCaseTarget",
+      "dailyUtilizationTarget",
+      "offlineASATarget",
+      "onlineASATarget",
+  
     ])
   );
 });
@@ -192,7 +252,22 @@ router.get("/", async (req, res) => {
     "sipStatus",
     "accountStatus",
     "accountType",
-    "receiveUpdates"
+    "receiveUpdates",
+    "notifications",
+    "autoAccept",
+    "wrapup",
+    "workbin",
+    "autoLogin",
+    "interactionCapacity",
+    "caseCapacity",
+    "offerTimeout",
+    "wrapupTimeout",
+    "dailyInteractionTarget",
+    "dailyCaseTarget",
+    "dailyUtilizationTarget",
+    "offlineASATarget",
+    "onlineASATarget",
+
   ]);
   return res.send(users);
 });
@@ -285,7 +360,23 @@ function validateUpdate(data) {
     type: joi
       .string()
       .valid(["User", "Company"])
-      .optional()
+      .optional(),
+      notifications:joi.boolean(),
+      autoAccept:joi.boolean(),
+      wrapup:joi.boolean(),
+      workbin:joi.boolean(),
+      autoLogin:joi.boolean(),
+      interactionCapacity:joi.number(),
+      caseCapacity:joi.number(),
+      offerTimeout:joi.number(),
+      wrapupTimeout:joi.number(),
+      dailyInteractionTarget:joi.number(),
+      dailyCaseTarget:joi.number(),
+      dailyUtilizationTarget:joi.number(),
+      offlineASATarget:joi.number(),
+      onlineASATarget:joi.number(),
+  
+
     //sipStatus: joi.string().valid(["Unknown", "Connected", "Disconnected"])
   };
   return joi.validate(data, schema);
