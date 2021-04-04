@@ -15,12 +15,13 @@ router.post("/", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   let tenant = await Tenant.find({ email: req.body.email }).or({
-    name: req.body.name
+    name: req.body.name,
   });
   if (tenant.length > 0)
     return res.status(400).send("Email or name already exist");
   tenant = new Tenant(req.body);
   tenant.adminId = req.user._id;
+  tenant.adminIds.push(req.user._id);
   tenant = await tenant.save();
   await logTenantChange(tenant, "Create", req.user._id);
   //Update user role to be Administrator
@@ -44,7 +45,10 @@ router.put(
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     const tenant = await Tenant.findOneAndUpdate(
-      { _id: req.params.tenantId, adminId: req.user._id },
+      {
+        _id: req.params.tenantId,
+        $or: [{ adminId: req.user._id }, { adminIds: req.user._id }],
+      },
       req.body,
       { new: true }
     );
@@ -53,6 +57,16 @@ router.put(
         .status(404)
         .send("Tenant id not found or you do not have admin access");
     logTenantChange(tenant, "Update", req.user._id);
+
+    tenant.adminIds.forEach(async (adminId) => {
+      await User.findOneAndUpdate(
+        {
+          _id: adminId,
+        },
+        { role: "Administrator" }
+      );
+    });
+
     return res.send(tenant);
   }
 );
@@ -65,7 +79,7 @@ router.delete(
   async (req, res) => {
     let tenant = await Tenant.findOneAndDelete({
       _id: req.params.tenantId,
-      adminId: req.user._id
+      $or: [{ adminId: req.user._id }, { adminIds: req.user._id }],
     });
     if (!tenant)
       return res
@@ -84,7 +98,7 @@ router.get(
   async (req, res) => {
     const tenant = await Tenant.findOne({
       _id: req.params.tenantId,
-      adminId: req.user._id
+      $or: [{ adminId: req.user._id }, { adminIds: req.user._id }],
     });
     if (!tenant) return res.status(404).send("Tenant ID can not be found");
     await logTenantChange(tenant, "Read", req.user._id);
@@ -99,7 +113,9 @@ router.get("/", async (req, res) => {
     return res
       .status(403)
       .send("Forbidden - Administrator privilage is required.");
-  const tenants = await Tenant.find({ adminId: req.user._id });
+  const tenants = await Tenant.find({
+    $or: [{ adminId: req.user._id }, { adminIds: req.user._id }],
+  });
   return res.send(tenants);
 });
 

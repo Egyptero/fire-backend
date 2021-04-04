@@ -8,18 +8,82 @@ module.exports.Tenant = mongoose.model(
       type: String,
       required: true,
       unique: true,
-      min: 5
+      min: 5,
     },
     legalName: String,
     logo: {
       type: Boolean,
-      default: false
+      default: false,
     },
     website: String,
     taxId: String,
     docs: {
       type: Boolean,
-      default: false
+      default: false,
+    },
+    interactionCapacity: {
+      type: Number,
+      default: 1,
+    },
+    caseCapacity: {
+      type: Number,
+      default: 1,
+    },
+    offerTimeout: {
+      type: Number,
+      default: 8,
+    },
+    wrapupTimeout: {
+      type: Number,
+      default: 120,
+    },
+    dailyInteractionTarget: {
+      type: Number,
+      default: 30,
+    },
+    dailyCaseTarget: {
+      type: Number,
+      default: 10,
+    },
+    dailyUtilizationTarget: {
+      type: Number,
+      default: 80,
+    },
+    offlineASATarget: {
+      type: Number,
+      default: 10,
+    },
+    onlineASATarget: {
+      type: Number,
+      default: 10,
+    },
+    odi: {
+      type: Boolean,
+      default: true,
+    },
+    voip: {
+      type: Boolean,
+      default: false,
+    },
+    notifications: {
+      type: Boolean,
+      default: true,
+    },
+    autoAccept: {
+      type: Boolean,
+      default: false,
+    },
+    wrapup: {
+      type: Boolean,
+      default: true,
+    },
+    workbin: {
+      type: Boolean,
+      default: true,
+    },
+    autoLogin: {
+      type: Boolean,
+      default: false,
     },
     phone: String,
     mobile: String,
@@ -27,26 +91,26 @@ module.exports.Tenant = mongoose.model(
     email: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     adminId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
+      ref: "User",
     },
     adminIds: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
-      }
+        ref: "User",
+      },
     ],
     verified: {
       type: Boolean,
-      default: false
+      default: false,
     },
     status: {
       type: String,
       default: "Trial",
-      enum: ["Active", "Suspended", "Closed", "Trial"]
+      enum: ["Active", "Suspended", "Closed", "Trial"],
     },
     dbname: String,
     configuration: {
@@ -57,61 +121,50 @@ module.exports.Tenant = mongoose.model(
         accounts: [String],
         messenger: {
           type: Boolean,
-          default: false
-        }
+          default: false,
+        },
       },
       twitter: {
         pages: [String],
         accounts: [String],
         messenger: {
           type: Boolean,
-          default: false
-        }
-      }
-    }
+          default: false,
+        },
+      },
+    },
   })
 );
 
-module.exports.validate = function(data) {
+module.exports.validate = function (data) {
   const tenantSchema = {
-    name: joi
-      .string()
-      .min(3)
-      .max(100)
-      .required(),
-    email: joi
-      .string()
-      .email()
-      .required(),
-    dbname: joi
-      .string()
-      .min(8)
-      .max(100),
+    name: joi.string().min(3).max(100).required(),
+    email: joi.string().email().required(),
+    dbname: joi.string().min(8).max(100),
     adminId: joi.string().min(8),
-    legalName: joi
-      .string()
-      .optional()
-      .allow(""),
-    website: joi
-      .string()
-      .optional()
-      .allow(""),
-    taxId: joi
-      .string()
-      .optional()
-      .allow(""),
-    phone: joi
-      .string()
-      .optional()
-      .allow(""),
-    mobile: joi
-      .string()
-      .optional()
-      .allow(""),
-    fax: joi
-      .string()
-      .optional()
-      .allow("")
+    adminIds: joi.array(),
+    legalName: joi.string().optional().allow(""),
+    website: joi.string().optional().allow(""),
+    taxId: joi.string().optional().allow(""),
+    phone: joi.string().optional().allow(""),
+    mobile: joi.string().optional().allow(""),
+    fax: joi.string().optional().allow(""),
+    odi: joi.boolean(),
+    voip: joi.boolean(),
+    notifications: joi.boolean(),
+    autoAccept: joi.boolean(),
+    wrapup: joi.boolean(),
+    workbin: joi.boolean(),
+    autoLogin: joi.boolean(),
+    interactionCapacity: joi.number(),
+    caseCapacity: joi.number(),
+    offerTimeout: joi.number(),
+    wrapupTimeout: joi.number(),
+    dailyInteractionTarget: joi.number(),
+    dailyCaseTarget: joi.number(),
+    dailyUtilizationTarget: joi.number(),
+    offlineASATarget: joi.number(),
+    onlineASATarget: joi.number(),
   };
   return joi.validate(data, tenantSchema);
 };

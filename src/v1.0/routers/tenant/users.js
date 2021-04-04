@@ -12,7 +12,7 @@ router.post("/", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   let user = await User.find({ username: req.body.username }).or({
-    email: req.body.email
+    email: req.body.email,
   });
   if (user.length > 0)
     return res.status(400).send("Username or email already exist");
@@ -67,7 +67,6 @@ router.post("/", async (req, res) => {
       "dailyUtilizationTarget",
       "offlineASATarget",
       "onlineASATarget",
-  
     ])
   );
 });
@@ -81,7 +80,7 @@ router.put("/:userId", validateUser, async (req, res) => {
     req.body.password = await bcrypt.hash(req.body.password, salt);
   }
   const user = await User.findByIdAndUpdate(req.params.userId, req.body, {
-    new: true
+    new: true,
   });
   if (!user) return res.status(404).send("User id not found");
   logUserChange(user, "Update", req.user._id);
@@ -124,7 +123,6 @@ router.put("/:userId", validateUser, async (req, res) => {
       "dailyUtilizationTarget",
       "offlineASATarget",
       "onlineASATarget",
-  
     ])
   );
 });
@@ -173,7 +171,6 @@ router.delete("/:userId", validateUser, async (req, res) => {
       "dailyUtilizationTarget",
       "offlineASATarget",
       "onlineASATarget",
-  
     ])
   );
 });
@@ -222,7 +219,6 @@ router.get("/:userId", validateUser, async (req, res) => {
       "dailyUtilizationTarget",
       "offlineASATarget",
       "onlineASATarget",
-  
     ])
   );
 });
@@ -267,34 +263,17 @@ router.get("/", async (req, res) => {
     "dailyUtilizationTarget",
     "offlineASATarget",
     "onlineASATarget",
-
   ]);
   return res.send(users);
 });
 
 function validate(data) {
   const schema = {
-    firstname: joi
-      .string()
-      .min(3)
-      .max(20),
-    lastname: joi
-      .string()
-      .min(3)
-      .max(20),
-    username: joi
-      .string()
-      .min(5)
-      .required(),
-    password: joi
-      .string()
-      .min(8)
-      .max(200)
-      .required(),
-    email: joi
-      .string()
-      .email()
-      .required(),
+    firstname: joi.string().min(3).max(20),
+    lastname: joi.string().min(3).max(20),
+    username: joi.string().min(5).required(),
+    password: joi.string().min(8).max(200).required(),
+    email: joi.string().email().required(),
     role: joi
       .string()
       .min(3)
@@ -305,33 +284,17 @@ function validate(data) {
         "Leader",
         "Business",
         "Administrator"
-      )
+      ),
   };
   return joi.validate(data, schema);
 }
 function validateUpdate(data) {
   const schema = {
-    firstname: joi
-      .string()
-      .min(3)
-      .max(20),
-    lastname: joi
-      .string()
-      .min(3)
-      .max(20),
-    username: joi
-      .string()
-      .min(5)
-      .optional(),
-    password: joi
-      .string()
-      .min(8)
-      .max(200)
-      .optional(),
-    email: joi
-      .string()
-      .email()
-      .optional(),
+    firstname: joi.string().min(3).max(20),
+    lastname: joi.string().min(3).max(20),
+    username: joi.string().min(5).optional(),
+    password: joi.string().min(8).max(200).optional(),
+    email: joi.string().email().optional(),
     role: joi
       .string()
       .min(3)
@@ -357,25 +320,21 @@ function validateUpdate(data) {
     sipServer: joi.string(),
     sipUserName: joi.string(),
     sipPassword: joi.string(),
-    type: joi
-      .string()
-      .valid(["User", "Company"])
-      .optional(),
-      notifications:joi.boolean(),
-      autoAccept:joi.boolean(),
-      wrapup:joi.boolean(),
-      workbin:joi.boolean(),
-      autoLogin:joi.boolean(),
-      interactionCapacity:joi.number(),
-      caseCapacity:joi.number(),
-      offerTimeout:joi.number(),
-      wrapupTimeout:joi.number(),
-      dailyInteractionTarget:joi.number(),
-      dailyCaseTarget:joi.number(),
-      dailyUtilizationTarget:joi.number(),
-      offlineASATarget:joi.number(),
-      onlineASATarget:joi.number(),
-  
+    type: joi.string().valid(["User", "Company"]).optional(),
+    notifications: joi.boolean(),
+    autoAccept: joi.boolean(),
+    wrapup: joi.boolean(),
+    workbin: joi.boolean(),
+    autoLogin: joi.boolean(),
+    interactionCapacity: joi.number(),
+    caseCapacity: joi.number(),
+    offerTimeout: joi.number(),
+    wrapupTimeout: joi.number(),
+    dailyInteractionTarget: joi.number(),
+    dailyCaseTarget: joi.number(),
+    dailyUtilizationTarget: joi.number(),
+    offlineASATarget: joi.number(),
+    onlineASATarget: joi.number(),
 
     //sipStatus: joi.string().valid(["Unknown", "Connected", "Disconnected"])
   };
