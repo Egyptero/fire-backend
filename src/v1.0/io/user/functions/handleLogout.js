@@ -10,7 +10,6 @@ const {
 const notifyStatusToManagers = require("../messages/notifyStatusToManagers");
 
 module.exports = async (socket, data, requester) => {
-  //console.log(data);
   let logoutResult = {
     action: "Error",
     message: "",

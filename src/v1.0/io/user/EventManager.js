@@ -9,14 +9,16 @@ const offerTimer = require("../system/offerTimer");
 let eventManagers = [];
 
 const registerUser = async (socket, user) => {
-  console.log("Register user request is received and user id:" + user._id);
+  winston.info(`Register user request for ${user.firstname} ${user.lastname}`);
   let eventManager = { socket, user };
   if (getEventManager(user).length < 1) eventManagers.push(eventManager);
   else updateEventManager(eventManager);
 };
 
 const unRegisterUser = async (user) => {
-  console.log("Unregister user request is received and user id:" + user._id);
+  winston.info(
+    `Unregister user request for ${user.firstname} ${user.lastname}`
+  );
   eventManagers.map((eventManager, index) => {
     if (JSON.stringify(eventManager.user._id) === JSON.stringify(user._id)) {
       eventManagers.splice(index, 1);
@@ -25,11 +27,9 @@ const unRegisterUser = async (user) => {
 };
 
 const changeUserState = (user) => {
-  console.log(
-    "Change user state request is received and user id:" +
-      user._id +
-      " and status" +
-      user.status
+  winston.info(
+    `Change user state request is received and user 
+      ${user.firstname} ${user.lastname} and status ${user.status}`
   );
   let eventManagerList = getEventManager(user);
   if (eventManagerList.length > 0) {
@@ -69,7 +69,7 @@ const updateEventManager = (newEventManager) => {
 };
 
 const findLAAEventManager = (targetSkillId) => {
-  console.log("Received request for LAA and targetskill:" + targetSkillId);
+  winston.info(`Received request for LAA and targetskill:${targetSkillId}`);
   let lAAEventManager = null;
   eventManagers.map((eventManager) => {
     //We should consider capacity rules here as per the skill groups configuration.
@@ -80,20 +80,18 @@ const findLAAEventManager = (targetSkillId) => {
       eventManager.user.status === "Ready" &&
       (eventManager.user.mode === "Push" || eventManager.user.mode === "Mix")
     ) {
-      console.log("We have ready agent");
       //Target skillid should be part of user Skills
       if (
         eventManager.user.skillIds.filter(
           (skillId) => JSON.stringify(skillId) === JSON.stringify(targetSkillId)
         ).length > 0
       ) {
-        console.log("skill found");
         if (!lAAEventManager) lAAEventManager = eventManager;
         else {
           //let us compare last modified date and get the oldest one
           if (
-            new Date(eventManager.user.lastModifiedDate) <
-            new Date(lAAEventManager.user.lastModifiedDate)
+            new Date(eventManager.user.inStateTime) <
+            new Date(lAAEventManager.user.inStateTime)
           )
             lAAEventManager = eventManager;
         }
@@ -103,7 +101,8 @@ const findLAAEventManager = (targetSkillId) => {
   return lAAEventManager;
 };
 const sendApplicationMessage = async (type, eventManager, data, requester) => {
-  console.log("Send user message,", data);
+  winston.info(`Send user message ${data}`);
+  console.log(data);
   if (!type) return;
   switch (type) {
     case "addinteraction":
@@ -126,45 +125,33 @@ const sendApplicationMessage = async (type, eventManager, data, requester) => {
     case "user":
       break;
     case "login":
-      console.log(
-        "Send Login Message to user id:" +
-          eventManager.user._id +
-          " and name is:" +
-          eventManager.user.firstname +
-          " " +
-          eventManager.user.lastname
+      winston.info(
+        `Send Login Message to 
+          ${eventManager.user.firstname} 
+          ${eventManager.user.lastname}`
       );
       return sendMessage(eventManager.socket, data, "Message");
     case "logout":
-      console.log(
-        "Send Logout Message to user id:" +
-          eventManager.user._id +
-          " and name is:" +
-          eventManager.user.firstname +
-          " " +
-          eventManager.user.lastname
+      winston.info(
+        `Send Logout Message to 
+          ${eventManager.user.firstname} 
+          ${eventManager.user.lastname}`
       );
       return sendMessage(eventManager.socket, data, "Message");
     case "state":
-      console.log(
-        "Send State Message to user id:" +
-          eventManager.user._id +
-          " and name is:" +
-          eventManager.user.firstname +
-          " " +
-          eventManager.user.lastname
+      winston.info(
+        `Send State Message to 
+          ${eventManager.user.firstname} 
+          ${eventManager.user.lastname}`
       );
       return sendMessage(eventManager.socket, data, "Message");
     case "notify":
       break;
     case "error":
-      console.log(
-        "Send Error Message to user id:" +
-          eventManager.user._id +
-          " and name is:" +
-          eventManager.user.firstname +
-          " " +
-          eventManager.user.lastname
+      winston.info(
+        `Send Error Message to 
+          ${eventManager.user.firstname} 
+          ${eventManager.user.lastname}`
       );
       return sendMessage(eventManager.socket, data, "Error");
     default:

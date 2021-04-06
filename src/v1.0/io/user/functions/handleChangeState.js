@@ -12,7 +12,6 @@ const winston = require("winston");
 const notifyStatusToManagers = require("../messages/notifyStatusToManagers");
 
 module.exports = async (socket, data, requester) => {
-  //console.log(data);
   let stateResult = {
     action: "Error",
     message: "",

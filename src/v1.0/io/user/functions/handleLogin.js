@@ -16,7 +16,6 @@ const workflowTrigger = require("../../../functions/router/workflow/workflowTrig
 const winston = require("winston");
 const notifyStatusToManagers = require("../messages/notifyStatusToManagers");
 module.exports = async (socket, data, requester) => {
-  //console.log(data);
   let loginResult = {
     action: "Error",
     message: "",
@@ -32,7 +31,7 @@ module.exports = async (socket, data, requester) => {
     loginResult.buttons = getStateButtons("Unknown");
     return sendMessage(socket, loginResult, "Error");
   }
-  //console.log("Current user status at login ,", user.status);
+
   if (
     !user.status ||
     user.status === "Unknown" ||
@@ -55,7 +54,6 @@ module.exports = async (socket, data, requester) => {
   await user.save();
 
   logUserChange(user, "Update", requester._id);
-  //console.log("User login is requested ...", user);
 
   loginResult.action = "login";
   loginResult.message = "Logged In";
@@ -78,8 +76,6 @@ module.exports = async (socket, data, requester) => {
   }
 
   //We need to load the current agent interactions and send it to them
-  //console.log("Log current user interactions");
-  //console.log(user.interactionIds);
   let interactions = await Interaction.find({
     agentId: user._id,
     $or: [{ stage: "Offer" }, { stage: "Handle" }, { stage: "Hold" }],

@@ -23,6 +23,7 @@ const {
   getEventManagerBySocket,
 } = require("./EventManager");
 const notifyStatusToManagers = require("./messages/notifyStatusToManagers");
+const winston = require("winston");
 /*
  * Event Manager is the carrier of the current event manager of the agent
  * Event Manager is loacted in arrage for all logged in Agent where each agent will have his own event manager
@@ -49,13 +50,13 @@ module.exports.onConnection = (socket) => {
 
   //TODO We need to remove the user from the event manager
   socket.on("disconnect", async () => {
-    console.log(
-      "Client disconnected , we should remove it from the live array"
-    );
     let eventManagerList = getEventManagerBySocket(socket);
     if (eventManagerList && eventManagerList.length > 0) {
       let user = eventManagerList[0].user;
-      //console.log(user);
+      winston.info(
+        `Client disconnected , we should remove user ${user.firstname} ${user.lastname} from the live array`
+      );
+
       if (
         user.status === "Ready" ||
         user.status === "Not ready" ||
@@ -75,15 +76,13 @@ module.exports.onConnection = (socket) => {
       await unRegisterUser(user);
       //We need to notify manager hirarcy now
       notifyStatusToManagers(user);
-
     }
   });
 };
 
 const onUserMessage = async (socket, data) => {
-  console.log("New user message", data);
+  winston.info(`New user message: ${data}`);
   const { error } = validateInput(data);
-  //console.log("New user message , validation", error);
   if (error) {
     let errorResult = {
       action: "Error",

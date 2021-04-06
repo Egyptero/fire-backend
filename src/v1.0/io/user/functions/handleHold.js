@@ -15,7 +15,6 @@ const {
 } = require("../EventManager");
 
 module.exports = async (socket, data, requester) => {
-  //console.log(data);
   let stateResult = {
     action: "Error",
     message: "",
