@@ -43,7 +43,7 @@ module.exports = async (socket, data, requester) => {
     user.status !== "Wrap up"
   ) {
     user.nextStatus = "Logged Out";
-    user.inStateTime = Date.now();
+    //user.inStateTime = Date.now(); status did not change , hence we should not set status
   } else {
     logoutResult.message = "User can not logout from this state:" + user.status;
     logoutResult.buttons = getStateButtons(user.status);

@@ -41,9 +41,9 @@ module.exports = async (socket, data, requester) => {
     );
     return;
   }
-  let eventManager = getEventManager(requester)[0];
+  let eventManager = require("../EventManager").getEventManager(requester)[0];
   if (!eventManager) {
-    changeUserState(
+    require("../EventManager").changeUserState(
       await sendAgentState(
         getEventManager(requester)[0],
         { status: "Logged Out" },
@@ -52,10 +52,10 @@ module.exports = async (socket, data, requester) => {
     );
     return;
   }
-  changeUserState(
+  require("../EventManager").changeUserState(
     await sendAgentState(eventManager, { status: "Not ready" }, requester)
   );
-  await sendApplicationMessage(
+  await require("../EventManager").sendApplicationMessage(
     "removeinteraction",
     eventManager,
     interaction,

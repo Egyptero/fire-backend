@@ -11,8 +11,9 @@ const executeWorkflowAfterNode = require("../../../functions/router/workflow/exe
 const {
   changeUserState,
   sendApplicationMessage,
-  getEventManager
+  getEventManager,
 } = require("../EventManager");
+const wrapupTimer = require("../../system/wrapupTimer");
 
 module.exports = async (socket, data, requester) => {
   let stateResult = {
@@ -20,7 +21,7 @@ module.exports = async (socket, data, requester) => {
     message: "",
     buttons: {},
     status: "Unknown",
-    nextStatus: "Unknown"
+    nextStatus: "Unknown",
   };
   let interaction = await Interaction.findById(data.interactionId);
   let user = await User.findById(requester._id);
@@ -33,6 +34,7 @@ module.exports = async (socket, data, requester) => {
       stateResult
     );
   }
+
   if (
     user.nextStatus &&
     user.nextStatus !== "Not ready" &&
@@ -52,6 +54,7 @@ module.exports = async (socket, data, requester) => {
       requester
     )
   );
+
   if (!interaction) {
     return;
   }
@@ -78,4 +81,8 @@ module.exports = async (socket, data, requester) => {
   logInteractionChange(interaction, "Update", requester);
   //TODO We should execute workflow after node for all interaction types except voice and vedio ??? Currently all will conitnue
   executeWorkflowAfterNode(interaction, requester, "Yes");
+  if (user.nextStatus === "Wrap up") {
+    // We need to run wrap up timer
+    wrapupTimer(user, interaction);
+  }
 };

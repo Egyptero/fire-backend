@@ -53,6 +53,7 @@ module.exports = async (node, interaction, workflow, requester,agentReady) => {
         interaction,
         requester
       );
+
       logInteractionChange(interaction, "Update", requester);
       //We should add timeout factor , so after some time according to node configuration , we should redirect the interaction to someone else
     } else {

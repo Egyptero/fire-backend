@@ -57,7 +57,9 @@ router.post("/", async (req, res) => {
           "dailyUtilizationTarget",
           "offlineASATarget",
           "onlineASATarget",
-      
+          "overrideUserConf",
+          "overrideKPIsConf",
+
         ]),
         token
       })
@@ -118,7 +120,10 @@ router.put("/", async (req, res) => {
       "dailyCaseTarget",
       "dailyUtilizationTarget",
       "offlineASATarget",
-      "onlineASATarget",    
+      "onlineASATarget",  
+      "overrideUserConf",
+      "overrideKPIsConf",
+
     ])
   );
 });
@@ -191,6 +196,9 @@ router.get("/", async (req, res) => {
       "dailyUtilizationTarget",
       "offlineASATarget",
       "onlineASATarget",
+      "overrideUserConf",
+      "overrideKPIsConf",
+
     
     ])
   );

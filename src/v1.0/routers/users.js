@@ -77,7 +77,8 @@ router.post("/", async (req, res) => {
           "dailyUtilizationTarget",
           "offlineASATarget",
           "onlineASATarget",
-      
+          "overrideUserConf",
+          "overrideKPIsConf",
         ]),
         token,
       })

@@ -5,6 +5,7 @@ const sendAgentAddInteraction = require("./messages/sendAgentAddInteraction");
 const sendAgentUpdateInteraction = require("./messages/sendAgentUpdateInteraction");
 const sendAgentRemoveInteraction = require("./messages/sendAgentRemoveInteraction");
 const sendAgentState = require("./messages/sendAgentState");
+const offerTimer = require("../system/offerTimer");
 let eventManagers = [];
 
 const registerUser = async (socket, user) => {
@@ -14,7 +15,7 @@ const registerUser = async (socket, user) => {
   else updateEventManager(eventManager);
 };
 
-const unRegisterUser = async user => {
+const unRegisterUser = async (user) => {
   console.log("Unregister user request is received and user id:" + user._id);
   eventManagers.map((eventManager, index) => {
     if (JSON.stringify(eventManager.user._id) === JSON.stringify(user._id)) {
@@ -23,7 +24,7 @@ const unRegisterUser = async user => {
   });
 };
 
-const changeUserState = user => {
+const changeUserState = (user) => {
   console.log(
     "Change user state request is received and user id:" +
       user._id +
@@ -34,30 +35,30 @@ const changeUserState = user => {
   if (eventManagerList.length > 0) {
     updateEventManager({
       socket: eventManagerList[0].socket,
-      user: user
+      user: user,
     });
   }
 };
 
-const getEventManager = user => {
+const getEventManager = (user) => {
   let eventManagerList = [];
-  eventManagers.map(eventManager => {
+  eventManagers.map((eventManager) => {
     if (JSON.stringify(eventManager.user._id) === JSON.stringify(user._id))
       eventManagerList.push(eventManager);
   });
   return eventManagerList;
 };
 
-const getEventManagerBySocket = socket => {
+const getEventManagerBySocket = (socket) => {
   let eventManagerList = [];
-  eventManagers.map(eventManager => {
+  eventManagers.map((eventManager) => {
     if (JSON.stringify(eventManager.socket.id) === JSON.stringify(socket.id))
       eventManagerList.push(eventManager);
   });
   return eventManagerList;
 };
 
-const updateEventManager = newEventManager => {
+const updateEventManager = (newEventManager) => {
   eventManagers.map((eventManager, index) => {
     if (
       JSON.stringify(eventManager.user._id) ===
@@ -67,10 +68,10 @@ const updateEventManager = newEventManager => {
   });
 };
 
-const findLAAEventManager = targetSkillId => {
+const findLAAEventManager = (targetSkillId) => {
   console.log("Received request for LAA and targetskill:" + targetSkillId);
   let lAAEventManager = null;
-  eventManagers.map(eventManager => {
+  eventManagers.map((eventManager) => {
     //We should consider capacity rules here as per the skill groups configuration.
     //We should read the latest value from the database configuration.
 
@@ -83,7 +84,7 @@ const findLAAEventManager = targetSkillId => {
       //Target skillid should be part of user Skills
       if (
         eventManager.user.skillIds.filter(
-          skillId => JSON.stringify(skillId) === JSON.stringify(targetSkillId)
+          (skillId) => JSON.stringify(skillId) === JSON.stringify(targetSkillId)
         ).length > 0
       ) {
         console.log("skill found");
@@ -102,7 +103,7 @@ const findLAAEventManager = targetSkillId => {
   return lAAEventManager;
 };
 const sendApplicationMessage = async (type, eventManager, data, requester) => {
-  console.log("Send user message,",data);
+  console.log("Send user message,", data);
   if (!type) return;
   switch (type) {
     case "addinteraction":
@@ -113,6 +114,8 @@ const sendApplicationMessage = async (type, eventManager, data, requester) => {
       );
       //Send the interaction
       await sendAgentAddInteraction(type, eventManager, data);
+      //Check offer timeout
+      offerTimer(eventManager, data);
       break;
     case "removeinteraction": // Status should be managed at the action level
       await sendAgentRemoveInteraction(type, eventManager, data);

@@ -6,7 +6,12 @@ const { buttons } = require("../../common/userTools");
 const getStateButtons = require("../messages/getStateButtons");
 const sendAgentState = require("../messages/sendAgentState");
 const logInteractionChange = require("../../../functions/logger/logInteractionChange");
-const {changeUserState, sendApplicationMessage, getEventManager } = require("../EventManager");
+const {
+  changeUserState,
+  sendApplicationMessage,
+  getEventManager,
+} = require("../EventManager");
+const { Tenant } = require("../../../models/tenant");
 
 module.exports = async (socket, data, requester) => {
   let stateResult = {
@@ -14,7 +19,7 @@ module.exports = async (socket, data, requester) => {
     message: "",
     buttons: {},
     status: "Unknown",
-    nextStatus: "Unknown"
+    nextStatus: "Unknown",
   };
   let interaction = await Interaction.findById(data.interactionId);
   let user = await User.findById(requester._id);
@@ -48,8 +53,19 @@ module.exports = async (socket, data, requester) => {
     );
     return;
   }
+  //We need to ensure wrap up option here in order to set next status
+  let tenant = await Tenant.findById(interaction.tenantId);
+  let nextStatus = "";
+  if (tenant) {
+    if (user.overrideUserConf) {
+      if (user.wrapup) nextStatus = "Wrap up";
+    } else {
+      if (tenant.wrapup) nextStatus = "Wrap up";
+    }
+  }
+
   changeUserState(
-    await sendAgentState(eventManager, { status: "Handling" }, requester)
+    await sendAgentState(eventManager, { status: "Handling",nextStatus }, requester)
   );
   interaction.stage = "Handle";
   interaction.agentId = eventManager.user._id;

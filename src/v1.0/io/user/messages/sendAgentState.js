@@ -26,7 +26,8 @@ module.exports = async (eventManager, data, requester) => {
   //In case we do not have requester , then we should consider same user as requester
   if (!requester) requester = user;
   user.status = data.status;
-  user.nextStatus = data.status;
+  if (data.nextStatus) user.nextStatus = data.nextStatus; // Read next status if it exist
+  else user.nextStatus = data.status;
 
   user.modifiedBy = requester._id;
   user.lastModifiedDate = Date.now();
@@ -43,7 +44,7 @@ module.exports = async (eventManager, data, requester) => {
   stateResult.inStateTime = user.inStateTime;
 
   sendMessage(eventManager.socket, stateResult, "Message");
-  
+
   //We need to notify manager hirarcy now
   notifyStatusToManagers(user);
   //We should trigger work flow here about ready user , in future we should consider capacity routing here

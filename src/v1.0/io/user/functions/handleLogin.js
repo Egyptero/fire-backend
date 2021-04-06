@@ -45,9 +45,10 @@ module.exports = async (socket, data, requester) => {
     user.nextStatus = "Logged In";
     user.inStateTime = Date.now();
   } else user.nextStatus = user.status;
-  if (user.inStateTime && user.inStateTime.length > 0)
-    // In case we cannot find instate timer at login
-    user.inStateTime = Date.now();
+  
+  // if (user.inStateTime && user.inStateTime.length > 0)
+  //   // In case we cannot find instate timer at login
+  //   user.inStateTime = Date.now();
   user.modifiedBy = requester._id;
   user.lastModifiedDate = Date.now();
   user.interactionIds = [];

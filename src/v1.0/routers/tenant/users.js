@@ -67,6 +67,8 @@ router.post("/", async (req, res) => {
       "dailyUtilizationTarget",
       "offlineASATarget",
       "onlineASATarget",
+      "overrideUserConf",
+      "overrideKPIsConf",
     ])
   );
 });
@@ -123,6 +125,8 @@ router.put("/:userId", validateUser, async (req, res) => {
       "dailyUtilizationTarget",
       "offlineASATarget",
       "onlineASATarget",
+      "overrideUserConf",
+      "overrideKPIsConf",
     ])
   );
 });
@@ -171,6 +175,8 @@ router.delete("/:userId", validateUser, async (req, res) => {
       "dailyUtilizationTarget",
       "offlineASATarget",
       "onlineASATarget",
+      "overrideUserConf",
+      "overrideKPIsConf",
     ])
   );
 });
@@ -219,6 +225,8 @@ router.get("/:userId", validateUser, async (req, res) => {
       "dailyUtilizationTarget",
       "offlineASATarget",
       "onlineASATarget",
+      "overrideUserConf",
+      "overrideKPIsConf",
     ])
   );
 });
@@ -263,6 +271,8 @@ router.get("/", async (req, res) => {
     "dailyUtilizationTarget",
     "offlineASATarget",
     "onlineASATarget",
+    "overrideUserConf",
+    "overrideKPIsConf",
   ]);
   return res.send(users);
 });
@@ -335,6 +345,8 @@ function validateUpdate(data) {
     dailyUtilizationTarget: joi.number(),
     offlineASATarget: joi.number(),
     onlineASATarget: joi.number(),
+    overrideUserConf: joi.boolean(),
+    overrideKPIsConf: joi.boolean(),
 
     //sipStatus: joi.string().valid(["Unknown", "Connected", "Disconnected"])
   };

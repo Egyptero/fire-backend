@@ -139,6 +139,14 @@ let userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  overrideUserConf:{
+    type: Boolean,
+    default:false
+  },
+  overrideKPIsConf:{
+    type: Boolean,
+    default: false
+  },
   sipServer: String,
   sipUserName: String,
   sipPassword: String,
@@ -256,7 +264,9 @@ userSchema.methods.generateAuthToken = function () {
       dailyUtilizationTarget:this.dailyUtilizationTarget,
       offlineASATarget:this.offlineASATarget,
       onlineASATarget:this.onlineASATarget,
-    
+      overrideUserConf:this.overrideUserConf,
+      overrideKPIsConf:this.overrideKPIsConf,
+        
     },
     config.get("jwtPrivateKey")
   );
@@ -309,7 +319,8 @@ module.exports.validate = function (data) {
     dailyUtilizationTarget:joi.number(),
     offlineASATarget:joi.number(),
     onlineASATarget:joi.number(),
-
+    overrideUserConf:joi.boolean(),
+    overrideKPIsConf:joi.boolean(),
   };
   return joi.validate(data, schema);
 };
