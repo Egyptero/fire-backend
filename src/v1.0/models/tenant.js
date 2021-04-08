@@ -111,7 +111,22 @@ module.exports.Tenant = mongoose.model(
       type: String,
       default: "Trial",
       enum: ["Active", "Suspended", "Closed", "Trial"],
-    },
+    }, //Not ready reason codes
+    notReadyReasons: [
+      {
+        type: String,
+      },
+    ], //Logout reason codes
+    logoutReasons: [
+      {
+        type: String,
+      },
+    ], //Wrap up reason codes
+    wrapupReasons: [
+      {
+        type: String,
+      },
+    ],
     dbname: String,
     configuration: {
       hook: String,
@@ -165,6 +180,9 @@ module.exports.validate = function (data) {
     dailyUtilizationTarget: joi.number(),
     offlineASATarget: joi.number(),
     onlineASATarget: joi.number(),
+    notReadyReasons: joi.array(), //Not ready reasons
+    logoutReasons: joi.array(),   //Logout reasons
+    wrapupReasons: joi.array(),   //Wrap up reasons
   };
   return joi.validate(data, tenantSchema);
 };
