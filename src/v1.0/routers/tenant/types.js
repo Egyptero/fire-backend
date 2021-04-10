@@ -23,7 +23,7 @@ router.put("/:typeId", verifyTypeID, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
   const type = await Type.findByIdAndUpdate(req.params.typeId, req.body, {
-    new: true
+    new: true,
   });
   if (!type) return res.status(404).send("type id not found");
   logTypeChange(type, "Update", req.user._id);
@@ -68,10 +68,7 @@ router.get("/", async (req, res) => {
 });
 function validateGet(data) {
   const typeSchema = {
-    name: joi
-      .string()
-      .min(3)
-      .max(20),
+    name: joi.string().min(3).max(20),
     description: joi.string().max(2048),
     channel: joi
       .string()
@@ -91,19 +88,15 @@ function validateGet(data) {
         "Email",
         "Webrtc",
         "Project",
-        "Custom"
+        "Custom",
       ]),
-    workflowId: joi.string()
+    workflowId: joi.string(),
   };
   return joi.validate(data, typeSchema);
 }
 function validate(data) {
   const typeSchema = {
-    name: joi
-      .string()
-      .min(3)
-      .max(20)
-      .required(),
+    name: joi.string().min(3).max(20).required(),
     description: joi.string().max(2048),
     channel: joi
       .string()
@@ -124,10 +117,11 @@ function validate(data) {
         "Email",
         "Webrtc",
         "Project",
-        "Custom"
+        "Custom",
       ])
       .required(),
-    workflowId: joi.string()
+    workflowId: joi.string(),
+    configuration: joi.object(),
   };
   return joi.validate(data, typeSchema);
 }

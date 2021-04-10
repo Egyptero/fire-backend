@@ -47,10 +47,7 @@ module.exports.Type = mongoose.model(
       type: Number,
       required: false,
     }, // SLA in seconds
-    oona: {
-      type: Number,
-      required: false,
-    }, // Offer on no accept
+    configuration: Object
   })
 );
 
@@ -83,7 +80,7 @@ module.exports.validate = function (data) {
     tenantId: joi.string().required(),
     workflowId: joi.string(),
     sla: joi.number().min(3).max(999), //Max SLA is 999 and min 3 seconds
-    oona: joi.number().min(3).max(9999), // Max OONA (Offer on no answer) min is 3 and max is 9999 seconds
+    configuration: joi.object(),
   };
   return joi.validate(data, typeSchema);
 };
